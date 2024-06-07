@@ -21,7 +21,7 @@
         </button>
       </div>
       <br>
-      <router-link :to="{ name: 'register' }">Register</router-link>
+      <router-link :to="{ name: 'register' }" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">Register</router-link>
     
       <p v-if="errorMessage" class="text-red-500 text-xs italic">{{ errorMessage }}</p>
     </div>

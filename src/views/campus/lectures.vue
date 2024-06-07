@@ -1,6 +1,13 @@
 //we are using this div just for the else part since we can't loop through an empty in this page componet because we get the the data from the end point anyway
 <template>
 
+<nav>
+    <router-link :to="{name:home}">Products</router-link> |
+    <router-link :to="{name: 'about'}" class="">About</router-link> |
+    <router-link :to ="{name:'course'}">lectures</router-link>
+    
+  </nav>
+
     <div v-if="lectures.length"> 
             <div class="max-w-2xl mx-auto p-6 bg-white rounded-lg shadow-lg">
             <h1 class="text-3xl font-bold mb-6 text-gray-800">Available Lectures</h1>

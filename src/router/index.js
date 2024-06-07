@@ -8,6 +8,7 @@ import Register from '../views/Register.vue';
 import Signup from '../views/Signup.vue';
 import { auth } from '../firebase'; // Import firebase auth module
 
+
 const routes = [
   // Non-protected routes
   {

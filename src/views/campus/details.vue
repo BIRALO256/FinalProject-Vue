@@ -1,5 +1,12 @@
 <template>
 
+<nav>
+    <router-link :to="{name:home}">Products</router-link> |
+    <router-link :to="{name: 'about'}" class="">About</router-link> |
+    <router-link :to ="{name:'course'}">lectures</router-link>
+    
+  </nav>
+  <router-view/>
     <div v-if="lecture" >
 
     <h1>{{ lecture.title }}</h1>

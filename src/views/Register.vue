@@ -20,7 +20,7 @@
           Register
         </button>
       </div>
-      <router-link :to ="{name:'signup'}">SignUp</router-link>
+      <router-link :to ="{name:'signup'}" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded" >SignUp</router-link>
       <p v-if="errorMessage" class="text-red-500 text-xs italic">{{ errorMessage }}</p>
     </div>
   </div>
