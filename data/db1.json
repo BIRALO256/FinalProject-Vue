@@ -1,0 +1,27 @@
+{
+
+    "posts" :[
+        {
+            "id":1,
+            "title":"welcome to the new  blog",
+            "body": "You'll need to understand JavaScript promises well before learning the async/await syntax.",
+            "tags":[
+                "webdev",
+                "coding",
+                "news"
+            ]
+
+        },
+        {
+            "id":2,
+            "title":"Top 5 css tips",
+            "body": "The async/await syntax is a special syntax created to help you work with promise objects. It makes your code cleaner and clearer.",
+            "tags":[
+                "webdev",
+                "coding",
+                "news"
+            ]
+
+        }
+    ]
+}

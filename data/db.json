@@ -1,0 +1,7 @@
+{
+    "lectures":[
+        {"title": "Software design preciples","id" :1 ,"details":"lorem12"},
+        {"title": "Embeded systems","id" :2 ,"details":"lorem12"},
+        {"title": "computer leture","id" :3 ,"details":"lorem12"}
+    ]
+}
