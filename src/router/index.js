@@ -1,12 +1,14 @@
 import { createRouter, createWebHistory } from 'vue-router';
 import HomeView from '../views/HomeView.vue';
-import About from '../views/AboutView.vue';
+import Welcome from '../views/customerpages/Welcomepage.vue';
 import Course from '../views/campus/lectures.vue';
 import Details from '@/views/campus/details.vue';
 import NotAvailable from '../views/NotAvailable.vue';
 import Register from '../views/Register.vue';
 import Signup from '../views/Signup.vue';
 import { auth } from '../firebase'; // Import firebase auth module
+import Users from '../views/Users'
+import Productdetails from '../views/customerpages/Productdetails.vue'
 
 
 const routes = [
@@ -14,8 +16,14 @@ const routes = [
   {
     path: '/about',
     name: 'about',
-    component: About,
-    meta: { requiresAuth: true },
+    component: Welcome,
+    // meta: { requiresAuth: true },
+  },
+  {
+    path: '/productDetails/:id',
+    name: 'product-details',
+    component: Productdetails,
+    // meta: { requiresAuth: true },
   },
   {
     path: '/lectures',
@@ -61,6 +69,12 @@ const routes = [
     path: '/feed',
     name: 'feed',
     component: HomeView,
+    meta: { requiresAuth: true },
+  },
+  {
+    path: '/users',
+    name: 'users',
+    component: Users,
     meta: { requiresAuth: true },
   },
 ];

@@ -1,5 +1,12 @@
 <template>
 
+
+  <nav>
+    <router-link :to="{name:'feed'}">Products</router-link> |
+    <router-link :to="{name: 'users'}" >System Users</router-link> 
+  </nav>
+
+
   <div class="container mx-auto p-4 max-w-6xl bg-white rounded-lg shadow">
     <h1 class="text-2xl font-bold text-gray-800 mb-6">Manage Products</h1>
     <form @submit.prevent="handleSubmit" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mb-8">
