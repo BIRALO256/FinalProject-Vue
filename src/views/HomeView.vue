@@ -1,4 +1,12 @@
 <template>
+
+<nav>
+    <router-link :to="{name:home}">feed</router-link> |
+    <router-link :to="{name: 'about'}" class="">About</router-link> |
+    <router-link :to ="{name:'course'}">lectures</router-link>
+    
+  </nav>
+
   <div class="home">
     <h1>hello from home</h1>
     <br>

@@ -1,15 +1,11 @@
 <template>
-  <nav>
-    <router-link to="/">Home</router-link> |
-    <router-link :to="{name: 'about'}" class="">About</router-link> |
-    <router-link :to ="{name:'course'}">lectures</router-link>
-  </nav>
+  
 
-  <div class="space-x-4">
+  <!-- <div class="space-x-4">
       <button @click="redirect" class="btn">Redirect</button>
       <button @click="back" class="btn">Back</button>
       <button @click="forward" class="btn">Forward</button>
-    </div>
+    </div> -->
 
   <router-view/>
 </template>
@@ -20,7 +16,7 @@ export default {
 
   methods:{
   redirect(){
-  this.$router.push({name:'home'})
+  this.$router.push({name:'feed'})
   },
   back(){
     this.$router.go(-1)
