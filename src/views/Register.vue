@@ -16,7 +16,7 @@
         <input v-model="password" type="password" placeholder="Password" class="shadow-sm appearance-none border rounded-lg w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:ring-2 focus:ring-blue-300">
       </div>
       <div class="mb-4">
-        <button @click="registerWithEmailPassword" class="w-full bg-green-500 hover:bg-green-600 text-white font-bold py-2 px-4 rounded-lg transition-colors duration-300 ease-in-out focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-opacity-50">
+        <button @click="registerWithEmailPassword" class="w-3/12 bg-green-500 hover:bg-green-600 text-white font-bold py-2 px-4 rounded-lg transition-colors duration-300 ease-in-out focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-opacity-50">
           Register
         </button>
       </div>
@@ -25,10 +25,12 @@
     </div>
   </div>
 </template>
+
+
 <script>
 import { auth, GoogleAuthProvider, signInWithPopup, createUserWithEmailAndPassword } from '../firebase';
-import { db } from '../firebase'; // Ensure db is correctly imported
-import { doc, setDoc, serverTimestamp } from 'firebase/firestore';
+import { db } from '../firebase';
+import { doc, setDoc, serverTimestamp, getDoc } from 'firebase/firestore';
 
 export default {
   data() {
@@ -43,10 +45,11 @@ export default {
       const provider = new GoogleAuthProvider();
       try {
         const result = await signInWithPopup(auth, provider);
-        // User signed in or registered with Google
         const user = result.user;
         await this.saveUserToFirestore(user);
-        this.$router.push({ name: 'feed' }); // Redirect to home page
+        
+        await this.handleUserRole(user.uid);
+
       } catch (error) {
         console.error('Error with Google authentication:', error);
         this.errorMessage = this.getErrorMessage(error.code);
@@ -55,13 +58,23 @@ export default {
     async registerWithEmailPassword() {
       try {
         const userCredential = await createUserWithEmailAndPassword(auth, this.email, this.password);
-        // User registered with email and password
         const user = userCredential.user;
         await this.saveUserToFirestore(user);
-        this.$router.push({ name: 'feed' }); // Redirect to home page
+        await this.handleUserRole(user.uid);
       } catch (error) {
         console.error('Error with email/password registration:', error);
         this.errorMessage = this.getErrorMessage(error.code);
+      }
+    },
+
+    // handling user role in a centalized way
+
+    async handleUserRole(uid) {
+      const role = await this.fetchUserRole(uid);
+      if (role === 1) { // Assuming '1' is the role for admins
+        this.$router.push({ name: 'feed' });
+      } else {
+        this.$router.push({ name: 'about' });
       }
     },
     async saveUserToFirestore(user) {
@@ -69,9 +82,18 @@ export default {
       await setDoc(userRef, {
         uid: user.uid,
         email: user.email,
+        role: 0, // Default to normal user; manually update in Firestore for admins
         displayName: user.displayName || null,
         createdAt: serverTimestamp()
       }, { merge: true });
+    },
+    async fetchUserRole(uid) {
+      const userRef = doc(db, 'users', uid);
+      const userSnap = await getDoc(userRef);
+      if (userSnap.exists()) {
+        return userSnap.data().role;
+      }
+      return null; // Handle case where role is not set
     },
     getErrorMessage(errorCode) {
       switch (errorCode) {

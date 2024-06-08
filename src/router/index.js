@@ -1,6 +1,6 @@
 import { createRouter, createWebHistory } from 'vue-router';
 import HomeView from '../views/HomeView.vue';
-import Welcome from '../views/customerpages/Welcomepage.vue';
+import Welcome from '../views/Customers/CustomersWelcomepage.vue';
 import Course from '../views/campus/lectures.vue';
 import Details from '@/views/campus/details.vue';
 import NotAvailable from '../views/NotAvailable.vue';
@@ -8,7 +8,8 @@ import Register from '../views/Register.vue';
 import Signup from '../views/Signup.vue';
 import { auth } from '../firebase'; // Import firebase auth module
 import Users from '../views/Users'
-import Productdetails from '../views/customerpages/Productdetails.vue'
+import Productdetails from '../views/Customers/CustomersProductdetails.vue'
+
 
 
 const routes = [
@@ -83,6 +84,8 @@ const router = createRouter({
   history: createWebHistory(process.env.BASE_URL),
   routes
 });
+
+
 
 router.beforeEach((to, from, next) => {
   const requiresAuth = to.matched.some(record => record.meta.requiresAuth);

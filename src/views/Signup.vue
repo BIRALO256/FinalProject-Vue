@@ -16,7 +16,7 @@
         <input v-model="password" type="password" placeholder="Password" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline">
       </div>
       <div class="mb-4">
-        <button @click="signInWithEmailPassword" class="w-full bg-green-500 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline">
+        <button @click="signInWithEmailPassword" class="w-3/12 bg-green-500 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline">
           Sign In
         </button>
       </div>
@@ -30,6 +30,8 @@
 
 <script>
 import { auth, GoogleAuthProvider, signInWithPopup, signInWithEmailAndPassword } from '../firebase';
+import { db } from '../firebase';
+import { doc, getDoc } from 'firebase/firestore';
 
 export default {
   data() {
@@ -44,22 +46,42 @@ export default {
       const provider = new GoogleAuthProvider();
       try {
         const result = await signInWithPopup(auth, provider);
-        console.log('User signed in with Google:', result.user);
-        this.$router.push({ name: 'feed' }); // Redirect to home page
+        const user = result.user;
+
+        await this.handleUserRole(user.uid);
+
       } catch (error) {
-        console.error('Error with Google sign-in:', error.code);
+        console.error('Error with Google sign-in:', error);
         this.errorMessage = this.getErrorMessage(error.code);
       }
     },
     async signInWithEmailPassword() {
       try {
         const userCredential = await signInWithEmailAndPassword(auth, this.email, this.password);
-        console.log('User signed in with email and password:', userCredential.user);
-        this.$router.push({ name: 'feed' }); // Redirect to home page
+        const user = userCredential.user;
+        await this.handleUserRole(user.uid);
       } catch (error) {
-        console.error('Error with email/password sign-in:', error.code);
+        console.error('Error with email/password sign-in:', error);
         this.errorMessage = this.getErrorMessage(error.code);
       }
+    },
+
+    async handleUserRole(uid) {
+      const role = await this.fetchUserRole(uid);
+      if (role === 1) { // Assuming '1' is the role for admins
+        this.$router.push({ name: 'feed' });
+      } else {
+        this.$router.push({ name: 'about' });
+      }
+    },
+    
+    async fetchUserRole(uid) {
+      const userRef = doc(db, 'users', uid);
+      const userSnap = await getDoc(userRef);
+      if (userSnap.exists()) {
+        return userSnap.data().role;
+      }
+      return null; // Handle case where role is not set
     },
     getErrorMessage(errorCode) {
       switch (errorCode) {
