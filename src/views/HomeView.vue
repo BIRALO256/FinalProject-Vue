@@ -1,10 +1,8 @@
 <template>
 
-
-  <nav>
-    <router-link :to="{name:'feed'}">Products</router-link> |
-    <router-link :to="{name: 'users'}" >System Users</router-link> 
-  </nav>
+    <div>
+        <AdminNavbar/>
+    </div>
 
 
   <div class="container mx-auto p-4 max-w-6xl bg-white rounded-lg shadow">
@@ -47,8 +45,14 @@
 import { ref } from 'vue';
 import { db } from '@/firebase';
 import { collection, doc, getDocs, addDoc, updateDoc, deleteDoc } from 'firebase/firestore';
+import AdminNavbar  from '../components/AdminNavbar.vue';
 
 export default {
+
+  components: {
+        AdminNavbar
+    },
+
   setup() {
     const products = ref([]);
     const product = ref({
