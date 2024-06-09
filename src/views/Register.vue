@@ -10,92 +10,100 @@
       </div>
 
       <div class="mb-4">
+        <input v-model="displayName" type="text" placeholder="Display Name" required class="shadow-sm appearance-none border rounded-lg w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:ring-2 focus:ring-blue-300">
+        <p v-if="!displayName" class="text-red-500 text-xs italic">Display name is required.</p>
+      </div>
+
+      <div class="mb-4">
         <input v-model="email" type="email" placeholder="Email" class="shadow-sm appearance-none border rounded-lg w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:ring-2 focus:ring-blue-300">
       </div>
+
       <div class="mb-4">
         <input v-model="password" type="password" placeholder="Password" class="shadow-sm appearance-none border rounded-lg w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:ring-2 focus:ring-blue-300">
       </div>
+
       <div class="mb-4">
-        <button @click="registerWithEmailPassword" class="w-3/12 bg-green-500 hover:bg-green-600 text-white font-bold py-2 px-4 rounded-lg transition-colors duration-300 ease-in-out focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-opacity-50">
+        <button @click="registerWithEmailPassword" class="w-full bg-green-500 hover:bg-green-600 text-white font-bold py-2 px-4 rounded-lg transition-colors duration-300 ease-in-out focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-opacity-50">
           Register
         </button>
       </div>
+
       <router-link :to="{ name: 'signup' }" class="text-blue-600 hover:text-blue-800 underline hover:no-underline">SignUp</router-link>
       <p v-if="errorMessage" class="text-red-500 text-xs italic">{{ errorMessage }}</p>
     </div>
   </div>
 </template>
 
-
 <script>
+import { ref } from 'vue';
+import { useRouter } from 'vue-router';
+import { useStore } from 'vuex';
 import { auth, GoogleAuthProvider, signInWithPopup, createUserWithEmailAndPassword } from '../firebase';
 import { db } from '../firebase';
-import { doc, setDoc, serverTimestamp, getDoc } from 'firebase/firestore';
+import { doc, setDoc, serverTimestamp } from 'firebase/firestore';
 
 export default {
-  data() {
-    return {
-      email: '',
-      password: '',
-      errorMessage: ''
-    };
-  },
-  methods: {
-    async authenticateWithGoogle() {
+  setup() {
+    const router = useRouter();
+    const store = useStore();
+    const email = ref('');
+    const password = ref('');
+    const displayName = ref('');
+    const errorMessage = ref('');
+
+    const authenticateWithGoogle = async () => {
       const provider = new GoogleAuthProvider();
       try {
         const result = await signInWithPopup(auth, provider);
-        const user = result.user;
-        await this.saveUserToFirestore(user);
-        
-        await this.handleUserRole(user.uid);
-
+        const user = {
+          uid: result.user.uid,
+          email: result.user.email,
+          displayName: result.user.displayName || '',
+          role: 0  // Default role for new users
+        };
+        await saveUserToFirestore(user);
+        store.dispatch('setUser', user);
+        router.push({ name: user.role === 1 ? 'feed' : 'about' });
       } catch (error) {
         console.error('Error with Google authentication:', error);
-        this.errorMessage = this.getErrorMessage(error.code);
+        errorMessage.value = getErrorMessage(error.code);
       }
-    },
-    async registerWithEmailPassword() {
+    };
+
+    const registerWithEmailPassword = async () => {
+      if (!displayName.value) {
+        errorMessage.value = "Display name is required.";
+        return;
+      }
       try {
-        const userCredential = await createUserWithEmailAndPassword(auth, this.email, this.password);
-        const user = userCredential.user;
-        await this.saveUserToFirestore(user);
-        await this.handleUserRole(user.uid);
+        const userCredential = await createUserWithEmailAndPassword(auth, email.value, password.value);
+        const user = {
+          uid: userCredential.user.uid,
+          email: userCredential.user.email,
+          displayName: displayName.value,
+          role: 0  // Default role for new users
+        };
+        await saveUserToFirestore(user);
+        store.dispatch('setUser', user);
+        router.push({ name: user.role === 1 ? 'feed' : 'about' });
       } catch (error) {
         console.error('Error with email/password registration:', error);
-        this.errorMessage = this.getErrorMessage(error.code);
+        errorMessage.value = getErrorMessage(error.code);
       }
-    },
+    };
 
-    // handling user role in a centalized way
-
-    async handleUserRole(uid) {
-      const role = await this.fetchUserRole(uid);
-      if (role === 1) { // Assuming '1' is the role for admins
-        this.$router.push({ name: 'feed' });
-      } else {
-        this.$router.push({ name: 'about' });
-      }
-    },
-    async saveUserToFirestore(user) {
+    const saveUserToFirestore = async (user) => {
       const userRef = doc(db, 'users', user.uid);
       await setDoc(userRef, {
         uid: user.uid,
         email: user.email,
-        role: 0, // Default to normal user; manually update in Firestore for admins
-        displayName: user.displayName || null,
+        displayName: user.displayName,
+        role: user.role,
         createdAt: serverTimestamp()
       }, { merge: true });
-    },
-    async fetchUserRole(uid) {
-      const userRef = doc(db, 'users', uid);
-      const userSnap = await getDoc(userRef);
-      if (userSnap.exists()) {
-        return userSnap.data().role;
-      }
-      return null; // Handle case where role is not set
-    },
-    getErrorMessage(errorCode) {
+    };
+
+    const getErrorMessage = (errorCode) => {
       switch (errorCode) {
         case 'auth/invalid-email':
           return 'Invalid email address. Please check the email format and try again.';
@@ -106,12 +114,20 @@ export default {
         default:
           return 'An unexpected error occurred. Please try again later.';
       }
-    }
+    };
+
+    return {
+      email,
+      password,
+      displayName,
+      errorMessage,
+      authenticateWithGoogle,
+      registerWithEmailPassword
+    };
   }
 }
 </script>
 
 <style scoped>
-
-
+/* Add your styles here if needed */
 </style>
