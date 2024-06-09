@@ -1,58 +1,81 @@
 <template>
+  <div class="min-h-screen bg-gray-100">
+    <AdminNavbar/>
+    <div class="w-3/4 mx-auto p-6">
+      <h1 class="text-3xl font-bold text-center mb-8">Manage Products</h1>
+      <form @submit.prevent="handleSubmit" class="bg-white p-6 rounded-lg shadow space-y-4">
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div class="flex flex-col">
+            <label class="font-medium text-gray-700">Product Name:</label>
+            <input v-model="product.name" type="text" placeholder="Name" class="form-input" />
+          </div>
+          <div class="flex flex-col">
+            <label class="font-medium text-gray-700">Description:</label>
+            <input v-model="product.description" type="text" placeholder="Description" class="form-input" />
+          </div>
+          <div class="flex flex-col">
+            <label class="font-medium text-gray-700">Image URL:</label>
+            <input v-model="product.imageUrl" type="text" placeholder="Image URL" class="form-input" />
+          </div>
+          <div class="flex flex-col">
+            <label class="font-medium text-gray-700">Category:</label>
+            <input v-model="product.category" type="text" placeholder="Category" class="form-input" />
+          </div>
+          <div class="flex flex-col">
+            <label class="font-medium text-gray-700">Price ($):</label>
+            <input v-model="product.price" type="number" placeholder="Price" class="form-input" min="0" />
+          </div>
+          <div class="flex flex-col">
+            <label class="font-medium text-gray-700">Stock:</label>
+            <input v-model="product.stock" type="number" placeholder="Stock" class="form-input" min="0" />
+          </div>
+        </div>
+        <button type="submit" class="mt-4 w-full bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
+          Submit
+        </button>
+      </form>
 
-    <div>
-        <AdminNavbar/>
-    </div>
-
-
-  <div class="container mx-auto p-4 max-w-6xl bg-white rounded-lg shadow">
-    <h1 class="text-2xl font-bold text-gray-800 mb-6">Manage Products</h1>
-    <form @submit.prevent="handleSubmit" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mb-8">
-      <input v-model="product.name" type="text" placeholder="Name" class="input" />
-      <div class="flex flex-col">
-        <label for="price" class="font-medium text-gray-700">Price ($):</label>
-        <input v-model="product.price" type="number" id="price" placeholder="Price" class="input" min="0" />
+      <!-- Category Filter -->
+      <div class="mt-6">
+        <select v-model="selectedCategory" class="form-select block w-full mt-1">
+          <option value="">All Categories</option>
+          <option v-for="category in categories" :key="category" :value="category">
+            {{ category }}
+          </option>
+        </select>
       </div>
-      <input v-model="product.description" type="text" placeholder="Description" class="input" />
-      <input v-model="product.imageUrl" type="text" placeholder="Image URL" class="input" />
-      <input v-model="product.category" type="text" placeholder="Category" class="input" />
-      <div class="flex flex-col">
-        <label for="stock" class="font-medium text-gray-700">Stock:</label>
-        <input v-model="product.stock" type="number" id="stock" placeholder="Stock" class="input" min="0" />
-      </div>
-      <button type="submit" class="btn bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded col-span-1 md:col-span-2 lg:col-span-3">Submit</button>
 
-   </form>
-
-    <div class="mt-8">
-      <h2 class="text-lg font-bold text-gray-800 mb-3">Products List</h2>
-      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-        <div v-for="item in products" :key="item.id" class="p-4 border rounded-lg shadow-sm">
-          <img :src="item.imageUrl" alt="" class="w-full h-48 object-cover mb-2 rounded">
-          <p class="font-semibold">{{ item.name }} - ${{ item.price }}</p>
-          <div class="flex justify-between mt-2">
-            <button @click="editProduct(item)" class="btn bg-green-500 hover:bg-green-700 text-white font-bold py-1 px-2 rounded">Edit</button>
-            <button @click="deleteProduct(item.id)" class="btn bg-red-500 hover:bg-red-700 text-white font-bold py-1 px-2 rounded">Delete</button>
+      <div class="mt-6">
+        <h2 class="text-2xl font-bold mb-4">Products List</h2>
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+          <div v-for="item in filteredProducts" :key="item.id" class="p-4 bg-white rounded-lg shadow">
+            <img :src="item.imageUrl" alt="" class="w-full h-48 object-cover mb-2 rounded">
+            <p class="font-semibold">{{ item.name }} - ${{ item.price }}</p>
+            <div class="flex justify-between mt-2">
+              <button @click="editProduct(item)" class="bg-green-500 hover:bg-green-700 text-white font-bold py-1 px-2 rounded">
+                Edit
+              </button>
+              <button @click="deleteProduct(item.id)" class="bg-red-500 hover:bg-red-700 text-white font-bold py-1 px-2 rounded">
+                Delete
+              </button>
+            </div>
           </div>
         </div>
       </div>
     </div>
   </div>
-
 </template>
 
 <script>
-import { ref } from 'vue';
+import { ref, computed } from 'vue';
 import { db } from '@/firebase';
 import { collection, doc, getDocs, addDoc, updateDoc, deleteDoc } from 'firebase/firestore';
-import AdminNavbar  from '../components/AdminNavbar.vue';
+import AdminNavbar from '@/components/AdminNavbar.vue';
 
 export default {
-
   components: {
-        AdminNavbar
-    },
-
+    AdminNavbar
+  },
   setup() {
     const products = ref([]);
     const product = ref({
@@ -64,13 +87,33 @@ export default {
       stock: 0
     });
     const editId = ref(null);
+    const selectedCategory = ref('');
+    const categories = computed(() => {
+      const cats = new Set(products.value.map(p => p.category));
+      return Array.from(cats);
+    });
+    const filteredProducts = computed(() => {
+      if (!selectedCategory.value) {
+        return products.value;
+      }
+      return products.value.filter(p => p.category === selectedCategory.value);
+    });
 
     const fetchProducts = async () => {
       const querySnapshot = await getDocs(collection(db, 'products'));
       products.value = querySnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
     };
 
+    const validateForm = () => {
+      if (!product.value.name || !product.value.price || !product.value.description || !product.value.imageUrl || !product.value.category || product.value.stock === undefined) {
+        alert('Please fill in all fields correctly.');
+        return false;
+      }
+      return true;
+    };
+
     const handleSubmit = async () => {
+      if (!validateForm()) return;
       const productsCol = collection(db, 'products');
       if (editId.value) {
         const productDoc = doc(db, 'products', editId.value);
@@ -96,26 +139,22 @@ export default {
 
     fetchProducts();
 
-    return { products, product, handleSubmit, editProduct, deleteProduct };
+    return { products, product, handleSubmit, editProduct, deleteProduct, selectedCategory, categories, filteredProducts };
   }
 };
 </script>
 
-<style>
-.input {
-  display: block;
-  margin-bottom: 1rem;
+<style scoped>
+.form-input {
   padding: 0.5rem;
+  border: 2px solid #e2e8f0;
+  border-radius: 0.375rem;
   width: 100%;
 }
-.btn {
-  padding: 0.5rem 1rem;
-  background-color: blue;
-  color: white;
-  border: none;
-  cursor: pointer;
-}
-.btn:hover {
-  background-color: darkblue;
+.form-select {
+  padding: 0.5rem;
+  border: 2px solid #e2e8f0;
+  border-radius: 0.375rem;
+  width: 100%;
 }
 </style>

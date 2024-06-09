@@ -10,6 +10,8 @@ import { auth } from '../firebase'; // Import firebase auth module
 import Users from '../views/Users'
 import Productdetails from '../views/Customers/CustomersProductdetails.vue'
 import CartPage  from '../views/Customers/AddCart'
+import CheckOut from '../views/Customers/CheckOut'
+import Payement from '../views/Customers/Payement'
 
 
 
@@ -19,6 +21,18 @@ const routes = [
     path: '/about',
     name: 'about',
     component: Welcome,
+    meta: { requiresAuth: true },
+  },
+  {
+    path: '/payement',
+    name: 'payement',
+    component: Payement,
+    meta: { requiresAuth: true },
+  },
+  {
+    path: '/Checkout',
+    name: 'checkout',
+    component: CheckOut,
     meta: { requiresAuth: true },
   },
   {

@@ -4,11 +4,22 @@
 
     <div class="container mx-auto p-4">
       <h1 class="text-2xl font-bold mb-6 text-center text-gray-800">Welcome to Our Store</h1>
+      
+      <!-- Category Filter Dropdown -->
+      <div class="mb-6">
+        <select v-model="selectedCategory" class="form-select block w-full mt-1">
+          <option value="">All Categories</option>
+          <option v-for="category in categories" :key="category" :value="category">
+            {{ category }}
+          </option>
+        </select>
+      </div>
+
       <div v-if="loading" class="text-center">
         <p>Loading products...</p> <!-- Consider replacing with a spinner -->
       </div>
       <div v-else class="grid grid-cols-1 md:grid-cols-4 gap-6">
-        <div v-for="product in products" :key="product.id" class="border p-4 rounded-lg shadow-lg bg-white">
+        <div v-for="product in filteredProducts" :key="product.id" class="border p-4 rounded-lg shadow-lg bg-white">
           <img :src="product.imageUrl" alt="Product Image" class="w-full h-64 object-cover mb-4 rounded">
           <h2 class="text-lg font-bold text-gray-900">{{ product.name }}</h2>
           <p class="text-xl font-semibold text-gray-800">${{ product.price }}</p>
@@ -28,7 +39,7 @@
 </template>
 
 <script>
-import { ref, onMounted } from 'vue';
+import { ref, onMounted, computed } from 'vue';
 import { db } from '@/firebase';
 import { collection, getDocs } from 'firebase/firestore';
 import CustomersNavbar from '../../components/CustomersNavbar.vue';
@@ -43,6 +54,7 @@ export default {
         const products = ref([]);
         const loading = ref(false);
         const message = ref('');
+        const selectedCategory = ref('');
 
         const fetchProducts = async () => {
             loading.value = true;
@@ -66,9 +78,30 @@ export default {
             setTimeout(() => message.value = '', 3000); // Message disappears after 3 seconds
         };
 
+        const categories = computed(() => {
+            const cats = new Set(products.value.map(p => p.category));
+            return Array.from(cats);
+        });
+
+        const filteredProducts = computed(() => {
+            if (!selectedCategory.value) {
+                return products.value;
+            }
+            return products.value.filter(p => p.category === selectedCategory.value);
+        });
+
         onMounted(fetchProducts);
 
-        return { products, loading, addToCart, message };
+        return { products, loading, addToCart, message, selectedCategory, categories, filteredProducts };
     }
 };
 </script>
+
+<style scoped>
+.form-select {
+  padding: 0.5rem;
+  border: 2px solid #e2e8f0;
+  border-radius: 0.375rem;
+  width: 100%;
+}
+</style>
