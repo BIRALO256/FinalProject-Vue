@@ -3,7 +3,7 @@
     <div class="container mx-auto flex justify-between items-center max-w-4xl">
       <div class="flex space-x-4">
         <router-link :to="{name:'about'}" class="text-lg hover:text-gray-300">All products</router-link>
-        <router-link :to="{name: 'about'}" class="text-lg hover:text-gray-300">Cart</router-link>
+        <router-link :to="{name: 'cart'}" class="text-lg hover:text-gray-300">Cart</router-link>
         <router-link :to="{name: 'about'}" class="text-lg hover:text-gray-300">Check out</router-link>   
       </div>
       <div class="flex items-center space-x-4">

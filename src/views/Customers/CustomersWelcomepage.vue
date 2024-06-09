@@ -21,6 +21,9 @@
         </div>
       </div>
     </div>
+    <div v-if="message" class="fixed bottom-4 right-4 bg-blue-500 text-white p-4 rounded">
+      {{ message }}
+    </div>
   </div>
 </template>
 
@@ -29,50 +32,43 @@ import { ref, onMounted } from 'vue';
 import { db } from '@/firebase';
 import { collection, getDocs } from 'firebase/firestore';
 import CustomersNavbar from '../../components/CustomersNavbar.vue';
-
+import { useStore } from 'vuex';
 
 export default {
-
     components: {
       CustomersNavbar,
-      
     },
-
     setup() {
-    const products = ref([]);
-    const loading = ref(false);  // Initialize loading state as false
+        const store = useStore();
+        const products = ref([]);
+        const loading = ref(false);
+        const message = ref('');
 
-    const fetchProducts = async () => {
-      loading.value = true;  // Set loading to true when fetch starts
-      try {
-        const querySnapshot = await getDocs(collection(db, 'products'));
-        products.value = querySnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
-      } catch (error) {
-        console.error("Failed to fetch products:", error);
-        // Handle errors, e.g., show an error message
-      } finally {
-        loading.value = false;  // Set loading to false when fetch completes
-      }
-    };
+        const fetchProducts = async () => {
+            loading.value = true;
+            try {
+                const querySnapshot = await getDocs(collection(db, 'products'));
+                products.value = querySnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+            } catch (error) {
+                console.error("Failed to fetch products:", error);
+            } finally {
+                loading.value = false;
+            }
+        };
 
-    onMounted(fetchProducts);
+        const addToCart = (product) => {
+            store.dispatch('addToCart', product);
+            showMessage('Added to cart: ' + product.name);
+        };
 
-    return { products, loading };
-  }
+        const showMessage = (msg) => {
+            message.value = msg;
+            setTimeout(() => message.value = '', 3000); // Message disappears after 3 seconds
+        };
+
+        onMounted(fetchProducts);
+
+        return { products, loading, addToCart, message };
+    }
 };
 </script>
-
-<style>
-.container {
-  max-width: 1200px;
-}
-.border {
-  border-color: #e2e8f0;
-}
-.shadow-lg {
-  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
-}
-.rounded {
-  border-radius: 0.5rem;
-}
-</style>
