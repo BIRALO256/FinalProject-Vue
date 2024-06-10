@@ -1,13 +1,14 @@
 <template>
-  <div>
+  <div class="min-h-screen bg-gray-100">
     <CustomersNavbar/>
 
     <div class="container mx-auto p-4">
       <h1 class="text-2xl font-bold mb-6 text-center text-gray-800">Welcome to Our Store</h1>
       
-      <!-- Category Filter Dropdown -->
-      <div class="mb-6">
-        <select v-model="selectedCategory" class="form-select block w-full mt-1">
+      <!-- Search and Category Filter -->
+      <div class="flex flex-col md:flex-row justify-between mb-6">
+        <input v-model="searchQuery" type="text" placeholder="Search products..." class="form-input mb-4 md:mb-0 md:mr-4" />
+        <select v-model="selectedCategory" class="form-select">
           <option value="">All Categories</option>
           <option v-for="category in categories" :key="category" :value="category">
             {{ category }}
@@ -55,6 +56,7 @@ export default {
         const loading = ref(false);
         const message = ref('');
         const selectedCategory = ref('');
+        const searchQuery = ref('');
 
         const fetchProducts = async () => {
             loading.value = true;
@@ -84,21 +86,22 @@ export default {
         });
 
         const filteredProducts = computed(() => {
-            if (!selectedCategory.value) {
-                return products.value;
-            }
-            return products.value.filter(p => p.category === selectedCategory.value);
+            return products.value.filter(p => {
+                return (p.name.toLowerCase().includes(searchQuery.value.toLowerCase()) ||
+                        p.description.toLowerCase().includes(searchQuery.value.toLowerCase())) &&
+                      (!selectedCategory.value || p.category === selectedCategory.value);
+            });
         });
 
         onMounted(fetchProducts);
 
-        return { products, loading, addToCart, message, selectedCategory, categories, filteredProducts };
+        return { products, loading, addToCart, message, selectedCategory, categories, filteredProducts, searchQuery };
     }
 };
 </script>
 
 <style scoped>
-.form-select {
+.form-input, .form-select {
   padding: 0.5rem;
   border: 2px solid #e2e8f0;
   border-radius: 0.375rem;

@@ -3,6 +3,15 @@
     <AdminNavbar/>
     <div class="w-3/4 mx-auto p-6">
       <h1 class="text-3xl font-bold text-center mb-8">Manage Products</h1>
+      <div class="flex justify-between mb-4">
+        <input v-model="searchQuery" type="text" placeholder="Search products..." class="form-input" />
+        <select v-model="selectedCategory" class="form-select ml-4">
+          <option value="">All Categories</option>
+          <option v-for="category in categories" :key="category" :value="category">
+            {{ category }}
+          </option>
+        </select>
+      </div>
       <form @submit.prevent="handleSubmit" class="bg-white p-6 rounded-lg shadow space-y-4">
         <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
           <div class="flex flex-col">
@@ -34,16 +43,6 @@
           Submit
         </button>
       </form>
-
-      <!-- Category Filter -->
-      <div class="mt-6">
-        <select v-model="selectedCategory" class="form-select block w-full mt-1">
-          <option value="">All Categories</option>
-          <option v-for="category in categories" :key="category" :value="category">
-            {{ category }}
-          </option>
-        </select>
-      </div>
 
       <div class="mt-6">
         <h2 class="text-2xl font-bold mb-4">Products List</h2>
@@ -88,15 +87,17 @@ export default {
     });
     const editId = ref(null);
     const selectedCategory = ref('');
+    const searchQuery = ref('');
     const categories = computed(() => {
       const cats = new Set(products.value.map(p => p.category));
       return Array.from(cats);
     });
     const filteredProducts = computed(() => {
-      if (!selectedCategory.value) {
-        return products.value;
-      }
-      return products.value.filter(p => p.category === selectedCategory.value);
+      return products.value.filter(p => {
+        return (p.name.toLowerCase().includes(searchQuery.value.toLowerCase()) ||
+                p.description.toLowerCase().includes(searchQuery.value.toLowerCase())) &&
+              (!selectedCategory.value || p.category === selectedCategory.value);
+      });
     });
 
     const fetchProducts = async () => {
@@ -104,16 +105,11 @@ export default {
       products.value = querySnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
     };
 
-    const validateForm = () => {
+    const handleSubmit = async () => {
       if (!product.value.name || !product.value.price || !product.value.description || !product.value.imageUrl || !product.value.category || product.value.stock === undefined) {
         alert('Please fill in all fields correctly.');
-        return false;
+        return;
       }
-      return true;
-    };
-
-    const handleSubmit = async () => {
-      if (!validateForm()) return;
       const productsCol = collection(db, 'products');
       if (editId.value) {
         const productDoc = doc(db, 'products', editId.value);
@@ -139,19 +135,13 @@ export default {
 
     fetchProducts();
 
-    return { products, product, handleSubmit, editProduct, deleteProduct, selectedCategory, categories, filteredProducts };
+    return { products, product, handleSubmit, editProduct, deleteProduct, selectedCategory, categories, filteredProducts, searchQuery };
   }
 };
 </script>
 
 <style scoped>
-.form-input {
-  padding: 0.5rem;
-  border: 2px solid #e2e8f0;
-  border-radius: 0.375rem;
-  width: 100%;
-}
-.form-select {
+.form-input, .form-select {
   padding: 0.5rem;
   border: 2px solid #e2e8f0;
   border-radius: 0.375rem;

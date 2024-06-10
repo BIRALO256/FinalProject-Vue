@@ -1,9 +1,9 @@
 <template>
-  <nav class="bg-gray-800 text-white p-4">
+  <nav class="bg-gray-800 text-white p-4 fixed top-0 w-full z-50">
     <div class="container mx-auto flex justify-between items-center max-w-4xl">
       <div>
         <router-link :to="{name:'feed'}" class="text-lg hover:text-gray-300 mr-4">Products</router-link>
-        <router-link :to="{name: 'users'}" class="text-lg hover:text-gray-300">System Users</router-link>
+        <router-link :to="{name: 'users'}" class="text-lg hover:text-gray-300">System Users</router-Link>
       </div>
       <div>
         <span v-if="user" class="mr-4">Hello, {{ user.displayName }}</span>
@@ -13,6 +13,8 @@
       </div>
     </div>
   </nav>
+  <!-- Adding a placeholder div to offset the height of the fixed navbar -->
+  <div class="h-16"></div>
 </template>
 
 <script>

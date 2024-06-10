@@ -24,8 +24,8 @@ const routes = [
     meta: { requiresAuth: true },
   },
   {
-    path: '/payement',
-    name: 'payement',
+    path: '/Payement',
+    name: 'Payement',
     component: Payement,
     meta: { requiresAuth: true },
   },
