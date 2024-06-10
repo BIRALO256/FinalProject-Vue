@@ -42,10 +42,11 @@ const routes = [
     meta: { requiresAuth: true },
   },
   {
-    path: '/productDetails/:id',
-    name: 'product-details',
-    component: Productdetails,
-    meta: { requiresAuth: true },
+  path: '/productDetails/:id',
+  name: 'product-details',
+  component: Productdetails,
+  props: true,  // Ensure props are passed correctly
+  meta: { requiresAuth: true },
   },
   {
     path: '/lectures',

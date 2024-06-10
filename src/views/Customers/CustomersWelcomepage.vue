@@ -30,6 +30,7 @@
           <router-link :to="{ name: 'product-details', params: { id: product.id } }" class="mt-2 bg-indigo-600 hover:bg-indigo-800 text-white font-bold py-2 px-4 rounded block text-center">
             Details
           </router-link>
+
         </div>
       </div>
     </div>
