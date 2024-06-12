@@ -20,6 +20,30 @@
           Sign In
         </button>
       </div>
+
+      <div class="mb-4">
+        <input v-model="phoneNumber" type="tel" placeholder="Phone Number (e.g., +256...)" class="shadow-sm appearance-none border rounded-lg w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:ring-2 focus:ring-blue-300">
+      </div>
+
+      <div id="recaptcha-container"></div>
+
+      <div class="mb-4">
+        <button @click="sendVerificationCode" class="w-full bg-orange-500 hover:bg-orange-600 text-white font-bold py-2 px-4 rounded-lg transition-colors duration-300 ease-in-out focus:outline-none focus:ring-2 focus:ring-orange-500 focus:ring-opacity-50">
+          Send Verification Code
+        </button>
+      </div>
+
+      <div v-if="verificationId">
+        <div class="mb-4">
+          <input v-model="code" type="text" placeholder="Verification Code" class="shadow-sm appearance-none border rounded-lg w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:ring-2 focus:ring-blue-300">
+        </div>
+        <div class="mb-4">
+          <button @click="verifyCode" class="w-full bg-green-500 hover:bg-green-600 text-white font-bold py-2 px-4 rounded-lg transition-colors duration-300 ease-in-out focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-opacity-50">
+            Verify Code and Sign In
+          </button>
+        </div>
+      </div>
+
       <router-link :to="{ name: 'register' }" class="text-blue-600 hover:text-blue-800 underline hover:no-underline">Register</router-link>
       <p v-if="errorMessage" class="text-red-500 text-xs italic">{{ errorMessage }}</p>
     </div>
@@ -27,10 +51,10 @@
 </template>
 
 <script>
-import { ref } from 'vue';
+import { ref, onMounted } from 'vue';
 import { useRouter } from 'vue-router';
 import { useStore } from 'vuex';
-import { auth, GoogleAuthProvider, signInWithPopup, signInWithEmailAndPassword } from '../firebase';
+import { auth, GoogleAuthProvider, signInWithPopup, signInWithEmailAndPassword, signInWithPhoneNumber, RecaptchaVerifier } from '../firebase';
 import { db } from '../firebase';
 import { doc, setDoc, serverTimestamp, getDoc } from 'firebase/firestore';
 
@@ -40,7 +64,28 @@ export default {
     const store = useStore();
     const email = ref('');
     const password = ref('');
+    const phoneNumber = ref('');
+    const code = ref('');
     const errorMessage = ref('');
+    const verificationId = ref(null);
+    let recaptchaVerifier = null;
+
+    onMounted(() => {
+            try {
+      recaptchaVerifier = new firebase.auth.RecaptchaVerifier('recaptcha-container', {
+        size: 'invisible',
+        callback: (response) => {
+          // reCAPTCHA solved, allow signInWithPhoneNumber.
+        },
+      }, auth);
+      recaptchaVerifier.render().then((widgetId) => {
+        window.recaptchaWidgetId = widgetId;
+      });
+      } catch (error) {
+      console.error('Error initializing reCAPTCHA:', error);
+      errorMessage.value = 'Failed to initialize reCAPTCHA. Please try again later.';
+      }
+    });
 
     const authenticateWithGoogle = async () => {
       const provider = new GoogleAuthProvider();
@@ -60,11 +105,38 @@ export default {
       try {
         const userCredential = await signInWithEmailAndPassword(auth, email.value, password.value);
         const user = userCredential.user;
-        // await saveUserToFirestore(user);
         store.dispatch('setUser', user);
         await handleUserRole(user.uid);
       } catch (error) {
         console.error('Error with email/password sign-in:', error);
+        errorMessage.value = getErrorMessage(error.code);
+      }
+    };
+
+    const sendVerificationCode = async () => {
+      if (!recaptchaVerifier) {
+        errorMessage.value = 'reCAPTCHA verifier is not ready. Please try again later.';
+        return;
+      }
+      try {
+        const confirmationResult = await signInWithPhoneNumber(auth, phoneNumber.value, recaptchaVerifier);
+        verificationId.value = confirmationResult.verificationId;
+      } catch (error) {
+        console.error('Error sending verification code:', error);
+        errorMessage.value = getErrorMessage(error.code);
+      }
+    };
+
+    const verifyCode = async () => {
+      try {
+        const credential = await auth.PhoneAuthProvider.credential(verificationId.value, code.value);
+        const userCredential = await auth.signInWithCredential(credential);
+        const user = userCredential.user;
+        await saveUserToFirestore(user);
+        store.dispatch('setUser', user);
+        await handleUserRole(user.uid);
+      } catch (error) {
+        console.error('Error verifying code:', error);
         errorMessage.value = getErrorMessage(error.code);
       }
     };
@@ -104,6 +176,10 @@ export default {
           return 'The email address is already in use by another account. Please use a different email address.';
         case 'auth/weak-password':
           return 'The password is too weak. Please use a stronger password.';
+        case 'auth/invalid-verification-code':
+          return 'Invalid verification code. Please check the code and try again.';
+        case 'auth/missing-verification-code':
+          return 'Missing verification code. Please enter the code sent to your phone.';
         default:
           return 'An unexpected error occurred. Please try again later.';
       }
@@ -112,14 +188,24 @@ export default {
     return {
       email,
       password,
+      phoneNumber,
+      code,
       errorMessage,
+      verificationId,
       authenticateWithGoogle,
-      signInWithEmailPassword
+      signInWithEmailPassword,
+      sendVerificationCode,
+      verifyCode
     };
   }
 }
 </script>
 
 <style scoped>
-/* Add your styles here if needed */
+.grecaptcha-badge {
+
+visibility: hidden;
+
+}
+
 </style>
