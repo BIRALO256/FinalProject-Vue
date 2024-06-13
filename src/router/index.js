@@ -1,17 +1,16 @@
 import { createRouter, createWebHistory } from 'vue-router';
 import HomeView from '../views/HomeView.vue';
 import Welcome from '../views/Customers/CustomersWelcomepage.vue';
-import Course from '../views/campus/lectures.vue';
-import Details from '@/views/campus/details.vue';
 import NotAvailable from '../views/NotAvailable.vue';
 import Register from '../views/Register.vue';
 import Signup from '../views/Signup.vue';
-import { auth } from '../firebase'; // Import firebase auth module
+import { auth } from '../firebase'; 
 import Users from '../views/Users'
 import Productdetails from '../views/Customers/CustomersProductdetails.vue'
 import CartPage  from '../views/Customers/AddCart'
 import CheckOut from '../views/Customers/CheckOut'
 import Payement from '../views/Customers/Payement'
+import Profile from '../views/Customers/Profilepage.vue'
 
 
 
@@ -23,6 +22,7 @@ const routes = [
     component: Welcome,
     meta: { requiresAuth: true },
   },
+  
   {
     path: '/Payement',
     name: 'Payement',
@@ -45,23 +45,10 @@ const routes = [
   path: '/productDetails/:id',
   name: 'product-details',
   component: Productdetails,
-  props: true,  // Ensure props are passed correctly
+  props: true,  
   meta: { requiresAuth: true },
   },
-  {
-    path: '/lectures',
-    name: 'course',
-    component: Course,
-    meta: { requiresAuth: true },
-    
-  },
-  {
-    path: '/campus/:id',
-    name: 'lectures',
-    component: Details,
-    props: true,
-    meta: { requiresAuth: true },
-  },
+
   // 404 page
   {
     path: '/:catchAll(.*)',
@@ -98,6 +85,12 @@ const routes = [
     path: '/users',
     name: 'users',
     component: Users,
+    meta: { requiresAuth: true },
+  },
+  {
+    path: '/usersprofile',
+    name: 'profile',
+    component: Profile,
     meta: { requiresAuth: true },
   },
 ];

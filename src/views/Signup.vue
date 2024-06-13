@@ -25,6 +25,8 @@
         <input v-model="phoneNumber" type="tel" placeholder="Phone Number (e.g., +256...)" class="shadow-sm appearance-none border rounded-lg w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:ring-2 focus:ring-blue-300">
       </div>
 
+          <!-- reCAPTCHA Container -->
+
       <div id="recaptcha-container"></div>
 
       <div class="mb-4">
@@ -54,7 +56,7 @@
 import { ref, onMounted } from 'vue';
 import { useRouter } from 'vue-router';
 import { useStore } from 'vuex';
-import { auth, GoogleAuthProvider, signInWithPopup, signInWithEmailAndPassword, signInWithPhoneNumber, RecaptchaVerifier } from '../firebase';
+import { auth, GoogleAuthProvider, signInWithPopup, signInWithEmailAndPassword, signInWithPhoneNumber, getAuth, RecaptchaVerifier } from '../firebase';
 import { db } from '../firebase';
 import { doc, setDoc, serverTimestamp, getDoc } from 'firebase/firestore';
 
@@ -71,19 +73,19 @@ export default {
     let recaptchaVerifier = null;
 
     onMounted(() => {
-            try {
-      recaptchaVerifier = new firebase.auth.RecaptchaVerifier('recaptcha-container', {
-        size: 'invisible',
-        callback: (response) => {
-          // reCAPTCHA solved, allow signInWithPhoneNumber.
-        },
-      }, auth);
-      recaptchaVerifier.render().then((widgetId) => {
-        window.recaptchaWidgetId = widgetId;
-      });
+      const auth = getAuth();
+      try {
+        recaptchaVerifier = new RecaptchaVerifier('recaptcha-container', {
+          size: 'invisible',
+          callback: (response) => {
+            // reCAPTCHA solved, allow signInWithPhoneNumber.
+            console.log('reCAPTCHA solved');
+          },
+        }, auth);
+
       } catch (error) {
-      console.error('Error initializing reCAPTCHA:', error);
-      errorMessage.value = 'Failed to initialize reCAPTCHA. Please try again later.';
+        console.error('Error initializing reCAPTCHA:', error);
+        errorMessage.value = 'Failed to initialize reCAPTCHA. Please try again later.';
       }
     });
 
@@ -202,10 +204,5 @@ export default {
 </script>
 
 <style scoped>
-.grecaptcha-badge {
-
-visibility: hidden;
-
-}
-
+/* Add your styles here if needed */
 </style>

@@ -19,4 +19,4 @@ const db = getFirestore(app);
 const auth = getAuth(app);
 const storage = getStorage(app); 
 
-export { auth, db, storage, GoogleAuthProvider, signInWithPopup, createUserWithEmailAndPassword, signInWithEmailAndPassword, signInWithPhoneNumber, RecaptchaVerifier };
+export { auth, db, storage, GoogleAuthProvider, signInWithPopup, createUserWithEmailAndPassword, signInWithEmailAndPassword, signInWithPhoneNumber, RecaptchaVerifier,getAuth };
