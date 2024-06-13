@@ -27,7 +27,7 @@
 
           <!-- reCAPTCHA Container -->
 
-      <div id="recaptcha-container"></div>
+      <div ref="recaptchaContanier" id="recaptcha-container"></div>
 
       <div class="mb-4">
         <button @click="sendVerificationCode" class="w-full bg-orange-500 hover:bg-orange-600 text-white font-bold py-2 px-4 rounded-lg transition-colors duration-300 ease-in-out focus:outline-none focus:ring-2 focus:ring-orange-500 focus:ring-opacity-50">
@@ -72,10 +72,14 @@ export default {
     const verificationId = ref(null);
     let recaptchaVerifier = null;
 
+    const readRecaptchaVerifeir = () => {
+      recaptchaVerifier.vaue = document.getElementById(recaptchaContanier)
+    }
+
     onMounted(() => {
       const auth = getAuth();
       try {
-        recaptchaVerifier = new RecaptchaVerifier('recaptcha-container', {
+        recaptchaVerifier = new RecaptchaVerifier('readRecaptchaVerifeir', {
           size: 'invisible',
           callback: (response) => {
             // reCAPTCHA solved, allow signInWithPhoneNumber.
