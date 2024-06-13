@@ -4,49 +4,61 @@
       <h1 class="text-2xl font-bold mb-6 text-center">Sign In</h1>
 
       <div class="mb-4">
-        <button @click="authenticateWithGoogle" class="w-full bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded-lg transition-colors duration-300 ease-in-out focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50">
-          Sign In with Google
+        <button @click="authenticateWithGoogle" class="w-full bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded-lg transition-colors duration-300 ease-in-out focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50 flex items-center justify-center">
+          <font-awesome-icon :icon="['fas', 'google']" class="mr-2"/> Sign In with Google
         </button>
       </div>
 
       <div class="mb-4">
-        <input v-model="email" type="email" placeholder="Email" class="shadow-sm appearance-none border rounded-lg w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:ring-2 focus:ring-blue-300">
+        <div class="flex items-center">
+          <font-awesome-icon :icon="['fas', 'envelope']" class="mr-2 text-gray-500"/>
+          <input v-model="email" type="email" placeholder="Email" class="shadow-sm appearance-none border rounded-lg w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:ring-2 focus:ring-blue-300">
+        </div>
       </div>
       <div class="mb-4">
-        <input v-model="password" type="password" placeholder="Password" class="shadow-sm appearance-none border rounded-lg w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:ring-2 focus:ring-blue-300">
+        <div class="flex items-center">
+          <font-awesome-icon :icon="['fas', 'lock']" class="mr-2 text-gray-500"/>
+          <input v-model="password" type="password" placeholder="Password" class="shadow-sm appearance-none border rounded-lg w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:ring-2 focus:ring-blue-300">
+        </div>
       </div>
       <div class="mb-4">
-        <button @click="signInWithEmailPassword" class="w-full bg-green-500 hover:bg-green-600 text-white font-bold py-2 px-4 rounded-lg transition-colors duration-300 ease-in-out focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-opacity-50">
-          Sign In
+        <button @click="signInWithEmailPassword" class="w-full bg-green-500 hover:bg-green-600 text-white font-bold py-2 px-4 rounded-lg transition-colors duration-300 ease-in-out focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-opacity-50 flex items-center justify-center">
+          <font-awesome-icon :icon="['fas', 'sign-in-alt']" class="mr-2"/> Sign In
         </button>
       </div>
 
       <div class="mb-4">
-        <input v-model="phoneNumber" type="tel" placeholder="Phone Number (e.g., +256...)" class="shadow-sm appearance-none border rounded-lg w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:ring-2 focus:ring-blue-300">
+        <div class="flex items-center">
+          <font-awesome-icon :icon="['fas', 'phone']" class="mr-2 text-gray-500"/>
+          <input v-model="phoneNumber" type="tel" placeholder="Phone Number (e.g., +256...)" class="shadow-sm appearance-none border rounded-lg w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:ring-2 focus:ring-blue-300">
+        </div>
       </div>
 
-          <!-- reCAPTCHA Container -->
-
-      <div ref="recaptchaContanier" id="recaptcha-container"></div>
+      <div ref="recaptchaContainer" id="recaptcha-container"></div>
 
       <div class="mb-4">
-        <button @click="sendVerificationCode" class="w-full bg-orange-500 hover:bg-orange-600 text-white font-bold py-2 px-4 rounded-lg transition-colors duration-300 ease-in-out focus:outline-none focus:ring-2 focus:ring-orange-500 focus:ring-opacity-50">
-          Send Verification Code
+        <button @click="sendVerificationCode" class="w-full bg-orange-500 hover:bg-orange-600 text-white font-bold py-2 px-4 rounded-lg transition-colors duration-300 ease-in-out focus:outline-none focus:ring-2 focus:ring-orange-500 focus:ring-opacity-50 flex items-center justify-center">
+          <font-awesome-icon :icon="['fas', 'envelope']" class="mr-2"/> Send Verification Code
         </button>
       </div>
 
       <div v-if="verificationId">
         <div class="mb-4">
-          <input v-model="code" type="text" placeholder="Verification Code" class="shadow-sm appearance-none border rounded-lg w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:ring-2 focus:ring-blue-300">
+          <div class="flex items-center">
+            <font-awesome-icon :icon="['fas', 'envelope']" class="mr-2 text-gray-500"/>
+            <input v-model="code" type="text" placeholder="Verification Code" class="shadow-sm appearance-none border rounded-lg w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:ring-2 focus:ring-blue-300">
+          </div>
         </div>
         <div class="mb-4">
-          <button @click="verifyCode" class="w-full bg-green-500 hover:bg-green-600 text-white font-bold py-2 px-4 rounded-lg transition-colors duration-300 ease-in-out focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-opacity-50">
-            Verify Code and Sign In
+          <button @click="verifyCode" class="w-full bg-green-500 hover:bg-green-600 text-white font-bold py-2 px-4 rounded-lg transition-colors duration-300 ease-in-out focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-opacity-50 flex items-center justify-center">
+            <font-awesome-icon :icon="['fas', 'sign-in-alt']" class="mr-2"/> Verify Code and Sign In
           </button>
         </div>
       </div>
 
-      <router-link :to="{ name: 'register' }" class="text-blue-600 hover:text-blue-800 underline hover:no-underline">Register</router-link>
+      <router-link :to="{ name: 'register' }" class="text-blue-600 hover:text-blue-800 underline hover:no-underline flex items-center justify-center">
+        <font-awesome-icon :icon="['fas', 'user-plus']" class="mr-2"/> Register
+      </router-link>
       <p v-if="errorMessage" class="text-red-500 text-xs italic">{{ errorMessage }}</p>
     </div>
   </div>
@@ -72,21 +84,15 @@ export default {
     const verificationId = ref(null);
     let recaptchaVerifier = null;
 
-    const readRecaptchaVerifeir = () => {
-      recaptchaVerifier.vaue = document.getElementById(recaptchaContanier)
-    }
-
     onMounted(() => {
       const auth = getAuth();
       try {
-        recaptchaVerifier = new RecaptchaVerifier('readRecaptchaVerifeir', {
+        recaptchaVerifier = new RecaptchaVerifier('recaptcha-container', {
           size: 'invisible',
           callback: (response) => {
-            // reCAPTCHA solved, allow signInWithPhoneNumber.
             console.log('reCAPTCHA solved');
           },
         }, auth);
-
       } catch (error) {
         console.error('Error initializing reCAPTCHA:', error);
         errorMessage.value = 'Failed to initialize reCAPTCHA. Please try again later.';
@@ -153,7 +159,7 @@ export default {
         uid: user.uid,
         email: user.email,
         displayName: user.displayName || null,
-        role: 0,  // Default role for new users
+        role: 0,
         createdAt: serverTimestamp()
       }, { merge: true });
     };

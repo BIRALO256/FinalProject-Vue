@@ -1,19 +1,19 @@
 <template>
   <div class="min-h-screen bg-gray-100">
-    <AdminNavbar/>
-    <div class="w-3/4 mx-auto p-6">
-      <h1 class="text-3xl font-bold text-center mb-8">Manage Products</h1>
-      <div class="flex justify-between mb-4">
-        <input v-model="searchQuery" type="text" placeholder="Search products..." class="form-input" />
-        <select v-model="selectedCategory" class="form-select ml-4">
+    <AdminNavbar />
+    <div class="w-full md:w-3/4 mx-auto p-4 md:p-6">
+      <h1 class="text-2xl md:text-3xl font-bold text-center mb-4 md:mb-8">Manage Products</h1>
+      <div class="flex flex-col md:flex-row justify-between mb-4 md:space-x-4">
+        <input v-model="searchQuery" type="text" placeholder="Search products..." class="form-input w-full md:w-1/2 mb-2 md:mb-0" />
+        <select v-model="selectedCategory" class="form-select w-full md:w-1/4">
           <option value="">All Categories</option>
           <option v-for="category in categories" :key="category" :value="category">
             {{ category }}
           </option>
         </select>
       </div>
-      <form @submit.prevent="handleSubmit" class="bg-white p-6 rounded-lg shadow space-y-4">
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+      <form @submit.prevent="handleSubmit" class="bg-white p-4 md:p-6 rounded-lg shadow space-y-4">
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6">
           <div class="flex flex-col">
             <label class="font-medium text-gray-700">Product Name:</label>
             <input v-model="product.name" type="text" placeholder="Name" class="form-input" />
@@ -45,38 +45,40 @@
       </form>
 
       <div class="mt-6">
-        <h2 class="text-2xl font-bold mb-4">Products List</h2>
-        <table class="min-w-full bg-white">
-          <thead>
-            <tr>
-              <th class="py-2">Image</th>
-              <th class="py-2">Name</th>
-              <th class="py-2">Price</th>
-              <th class="py-2">Category</th>
-              <th class="py-2">Stock</th>
-              <th class="py-2">Actions</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr v-for="item in filteredProducts" :key="item.id" class="border-t">
-              <td class="py-2">
-                <img :src="item.imageUrl" alt="" class="w-16 h-16 object-cover rounded">
-              </td>
-              <td class="py-2">{{ item.name }}</td>
-              <td class="py-2">${{ item.price }}</td>
-              <td class="py-2">{{ item.category }}</td>
-              <td class="py-2">{{ item.stock }}</td>
-              <td class="py-2">
-                <button @click="editProduct(item)" class="bg-green-500 hover:bg-green-700 text-white font-bold py-1 px-2 rounded">
-                  Edit
-                </button>
-                <button @click="deleteProduct(item.id)" class="bg-red-500 hover:bg-red-700 text-white font-bold py-1 px-2 rounded ml-2">
-                  Delete
-                </button>
-              </td>
-            </tr>
-          </tbody>
-        </table>
+        <h2 class="text-xl md:text-2xl font-bold mb-4">Products List</h2>
+        <div class="overflow-x-auto">
+          <table class="min-w-full bg-white">
+            <thead>
+              <tr>
+                <th class="py-2">Image</th>
+                <th class="py-2">Name</th>
+                <th class="py-2">Price</th>
+                <th class="py-2">Category</th>
+                <th class="py-2">Stock</th>
+                <th class="py-2">Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr v-for="item in filteredProducts" :key="item.id" class="border-t">
+                <td class="py-2">
+                  <img :src="item.imageUrl" alt="" class="w-16 h-16 object-cover rounded">
+                </td>
+                <td class="py-2">{{ item.name }}</td>
+                <td class="py-2">{{ item.price }}</td>
+                <td class="py-2">{{ item.category }}</td>
+                <td class="py-2">{{ item.stock }}</td>
+                <td class="py-2 flex items-center justify-center md:justify-start space-x-2">
+                  <button @click="editProduct(item)" class="bg-green-500 hover:bg-green-700 text-white font-bold py-1 px-2 rounded flex items-center">
+                    <i class="fas fa-edit mr-1"></i> Edit
+                  </button>
+                  <button @click="deleteProduct(item.id)" class="bg-red-500 hover:bg-red-700 text-white font-bold py-1 px-2 rounded flex items-center">
+                    <i class="fas fa-trash-alt mr-1"></i> Delete
+                  </button>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
       </div>
     </div>
   </div>
@@ -187,6 +189,8 @@ export default {
 </script>
 
 <style scoped>
+@import url('https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css');
+
 .form-input, .form-select {
   padding: 0.5rem;
   border: 2px solid #e2e8f0;
@@ -211,5 +215,10 @@ th {
 
 tr:nth-child(even) {
   background-color: #f9fafb;
+}
+
+button {
+  display: flex;
+  align-items: center;
 }
 </style>
