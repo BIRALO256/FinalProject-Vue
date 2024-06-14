@@ -67,7 +67,7 @@ export default {
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ amount: calculateSubtotal.value }),
+        body: JSON.stringify({ amount: calculateSubtotal.value, currency: 'usd' }),
       });
 
       const { clientSecret } = await response.json();
@@ -82,7 +82,30 @@ export default {
         console.error('Error:', error);
       } else {
         console.log('Payment successful:', paymentIntent);
+        // Save the order to Firestore
+        saveOrder(paymentIntent);
       }
+    };
+
+    const saveOrder = async (paymentIntent) => {
+      const order = {
+        userId: store.state.user.id,
+        items: store.state.cart,
+        total: calculateSubtotal.value / 100,
+        paymentIntentId: paymentIntent.id,
+        status: 'paid',
+        createdAt: new Date().toISOString()
+      };
+
+      await fetch('https://my-cloud-function-url/saveOrder', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(order),
+      });
+
+      store.dispatch('clearCart');
     };
 
     return { submitPayment, cardStyle, stripeReady, calculateSubtotal };

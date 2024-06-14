@@ -27,7 +27,7 @@
                 <button @click="clearCart" class="bg-gray-600 hover:bg-gray-800 text-white font-bold py-2 px-6 rounded transition duration-300 flex items-center justify-center">
                 <font-awesome-icon :icon="['fas', 'times-circle']" class="mr-1"/> Clear Cart
                 </button>
-                <router-link to="/Payment" class="bg-green-600 hover:bg-green-800 text-white font-bold py-2 px-6 rounded transition duration-300 flex items-center justify-center">
+                <router-link to="/Payement" class="bg-green-600 hover:bg-green-800 text-white font-bold py-2 px-6 rounded transition duration-300 flex items-center justify-center">
                 <font-awesome-icon :icon="['fas', 'check-circle']" class="mr-1"/> Proceed to Payment
                 </router-link>
             </div>
