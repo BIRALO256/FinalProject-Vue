@@ -8,9 +8,11 @@
     mutations: {
         setUser(state, user) {
         state.user = user;
+        localStorage.setItem('user', JSON.stringify(user)); // Save user to local storage
         },
         clearUser(state) {
         state.user = null;
+        localStorage.removeItem('user'); // Remove user from local storage
         },
         addToCart(state, product) {
         const existingProduct = state.cart.find(item => item.id === product.id);
@@ -31,7 +33,6 @@
         if (product && product.quantity > 1) {
             product.quantity--;
         } else {
-            // Optionally remove the item if the quantity is 1 or less
             const index = state.cart.findIndex(item => item.id === productId);
             if (index !== -1) {
             state.cart.splice(index, 1);

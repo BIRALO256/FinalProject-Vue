@@ -112,13 +112,18 @@ export default {
         errorMessage.value = getErrorMessage(error.code);
       }
     };
-
-    const signInWithEmailPassword = async () => {
+        const signInWithEmailPassword = async () => {
       try {
         const userCredential = await signInWithEmailAndPassword(auth, email.value, password.value);
         const user = userCredential.user;
-        store.dispatch('setUser', user);
-        await handleUserRole(user.uid);
+        
+        if (user) {
+          console.log('User signed in successfully:', user);
+          store.dispatch('setUser', user);
+          await handleUserRole(user.uid);
+        } else {
+          console.error('No user object returned');
+        }
       } catch (error) {
         console.error('Error with email/password sign-in:', error);
         errorMessage.value = getErrorMessage(error.code);

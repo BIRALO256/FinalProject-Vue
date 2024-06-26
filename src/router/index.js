@@ -11,6 +11,7 @@ import CartPage  from '../views/Customers/AddCart'
 import CheckOut from '../views/Customers/CheckOut'
 import Payement from '../views/Customers/Payement'
 import Profile from '../views/Customers/Profilepage.vue'
+import store from '../store/index'; // Import the store
 
 
 
@@ -100,11 +101,9 @@ const router = createRouter({
   routes
 });
 
-
-
 router.beforeEach((to, from, next) => {
   const requiresAuth = to.matched.some(record => record.meta.requiresAuth);
-  const currentUser = auth.currentUser;
+  const currentUser = store.state.user; // Get user from Vuex store
 
   if (requiresAuth && !currentUser) {
     next('/register'); // Redirect to registration page if authentication is required but user is not logged in
