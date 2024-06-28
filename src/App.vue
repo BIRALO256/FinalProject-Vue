@@ -1,11 +1,6 @@
 <template>
   
 
-  <!-- <div class="space-x-4">
-      <button @click="redirect" class="btn">Redirect</button>
-      <button @click="back" class="btn">Back</button>
-      <button @click="forward" class="btn">Forward</button>
-    </div> -->
 
   <router-view/>
 </template>
