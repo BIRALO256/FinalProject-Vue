@@ -1,20 +1,20 @@
-    // store/index.js
     import { createStore } from 'vuex';
 
     const store = createStore({
     state: {
         user: null,
         cart: [],
-        language: 'yo' // Default language
+        language: 'yo', // Default language
+        currency: 'USD' // Default currency
     },
     mutations: {
         setUser(state, user) {
         state.user = user;
-        localStorage.setItem('user', JSON.stringify(user)); // Save user to local storage
+        localStorage.setItem('user', JSON.stringify(user));
         },
         clearUser(state) {
         state.user = null;
-        localStorage.removeItem('user'); // Remove user from local storage
+        localStorage.removeItem('user');
         },
         addToCart(state, product) {
         const existingProduct = state.cart.find(item => item.id === product.id);
@@ -46,6 +46,10 @@
         },
         setLanguage(state, language) {
         state.language = language;
+        },
+        setCurrency(state, currency) {
+        state.currency = currency;
+        localStorage.setItem('currency', currency); // Save currency to local storage
         }
     },
     actions: {
@@ -69,8 +73,17 @@
         },
         setLanguage({ commit }, language) {
         commit('setLanguage', language);
+        },
+        setCurrency({ commit }, currency) {
+        commit('setCurrency', currency);
         }
     }
     });
+
+    // Initialize currency from localStorage if available
+    const currencyFromStorage = localStorage.getItem('currency');
+    if (currencyFromStorage) {
+    store.commit('setCurrency', currencyFromStorage);
+    }
 
     export default store;

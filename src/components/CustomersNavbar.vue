@@ -37,7 +37,8 @@
               <font-awesome-icon icon="user" class="mr-2" />
             </router-link>
             <button @click="logout" class="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded-lg transition duration-300 ease-in-out flex items-center">
-              <font-awesome-icon icon="sign-out-alt" class="mr-2" />{{ $t('navbar.logout') }}
+              <font-awesome-icon icon="sign-out-alt" class="mr-2" />
+              <!-- {{ $t('navbar.logout') }} -->
             </button>
           </template>
 
@@ -48,6 +49,7 @@
 
           <!-- Language Selector -->
           <LanguageSelector />
+          <CurrencySelector/>
         </div>
       </div>
     </div>
@@ -62,10 +64,12 @@ import { useRouter } from 'vue-router';
 import { useI18n } from 'vue-i18n'; // Import useI18n hook for translation
 
 import LanguageSelector from './LanguageSelector.vue';
+import CurrencySelector from './CurrencySelector.vue';
 
 export default {
   components: {
     LanguageSelector,
+    CurrencySelector,
   },
   setup() {
     const { t } = useI18n(); // Access translation function t() from useI18n hook
