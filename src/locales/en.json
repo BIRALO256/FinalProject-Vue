@@ -1,0 +1,27 @@
+    {
+        "navbar": {
+        "products": "Products",
+        "cart": "Cart",
+        "systemUsers": "System Users",
+        "hello": "Hello,",
+        "checkout": "Checkout",
+        "profile": "Profile",
+        "logout": "logout",
+        "signUp": "Sign Up"
+        },
+        "manageProducts": "Manage Products",
+        "searchPlaceholder": "Search products...",
+        "allCategories": "All Categories",
+        "productName": "Product Name:",
+        "description": "Description",
+        "image": "Image:",
+        "category": "Category:",
+        "price": "Price ($)",
+        "stock": "Stock",
+        "submit": "Submit",
+        "productsList": "Products List",
+        "actions": "Actions",
+        "edit": "Edit",
+        "delete": "Delete"
+    }
+    

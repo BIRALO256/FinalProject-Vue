@@ -1,0 +1,31 @@
+    {
+        "navbar": {
+        "products": "المنتجات",
+        "cart": "العربة",
+        "hello": "مرحبًا،",
+        "checkout": "الدفع",
+        "logout": "تسجيل الخروج",
+        "systemUsers": "مستخدمي النظام",
+        "signUp": "التسجيل",
+        "profile": "الملف الشخصي"
+        },
+        "welcome": "مرحبًا بكم في متجرنا",
+        "searchPlaceholder": "ابحث عن المنتجات...",
+        "allCategories": "كل الفئات",
+        "loadingProducts": "جارٍ تحميل المنتجات...",
+        "addToCart": "أضف إلى السلة",
+        "productDetails": "التفاصيل",
+        "manageProducts": "إدارة المنتجات",
+        "productName": "اسم المنتج:",
+        "description": "الوصف:",
+        "image": "الصورة",
+        "category": "الفئة",
+        "price": "السعر ($)",
+        "stock": "المخزون",
+        "submit": "إرسال",
+        "productsList": "قائمة المنتجات",
+        "actions": "إجراءات",
+        "edit": "تحرير",
+        "delete": "حذف"
+    }
+    

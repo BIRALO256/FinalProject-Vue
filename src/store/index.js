@@ -1,9 +1,11 @@
+    // store/index.js
     import { createStore } from 'vuex';
 
     const store = createStore({
     state: {
         user: null,
-        cart: []
+        cart: [],
+        language: 'yo' // Default language
     },
     mutations: {
         setUser(state, user) {
@@ -41,6 +43,9 @@
         },
         clearCart(state) {
         state.cart = [];
+        },
+        setLanguage(state, language) {
+        state.language = language;
         }
     },
     actions: {
@@ -61,6 +66,9 @@
         },
         clearCart({ commit }) {
         commit('clearCart');
+        },
+        setLanguage({ commit }, language) {
+        commit('setLanguage', language);
         }
     }
     });

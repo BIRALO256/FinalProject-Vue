@@ -1,0 +1,32 @@
+    {
+        "navbar": {
+        "products": "Bidhaa",
+        "cart": "Troli",
+        "hello": "Habari,",
+        "checkout": "Lipa",
+        "profile": "Wasifu",
+        "systemUsers": "Watumiaji wa Mfumo",
+        "logout": "Toka",
+        "signUp": "Jiunge"
+        },
+        
+        "welcome": "Karibu kwenye Duka Letu",
+        "searchPlaceholder": "Tafuta bidhaa...",
+        "allCategories": "Aina Zote",
+        "loadingProducts": "Inapakia bidhaa...",
+        "addToCart": "Ongeza kwenye Troli",
+        "productDetails": "Maelezo",
+        "manageProducts": "Simamia Bidhaa",
+        "productName": "Jina la Bidhaa:",
+        "description": "Maelezo:",
+        "image": "Picha",
+        "category": "Aina:",
+        "price": "Bei ($)",
+        "stock": "Hisa:",
+        "submit": "Wasilisha",
+        "productsList": "Orodha ya Bidhaa",
+        "actions": "Vitendo",
+        "edit": "Hariri",
+        "delete": "Futa"
+    }
+    

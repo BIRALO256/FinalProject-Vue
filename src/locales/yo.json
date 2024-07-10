@@ -1,0 +1,31 @@
+    {
+        "navbar": {
+        "products": "Awọn ọja",
+        "cart": "Troli",
+        "hello": "Kaabo, ",
+        "checkout": "Fi owo ra",
+        "systemUsers": "Awọn olumulo Eto",
+        "logout": "Fọwọsi",
+        "signUp": "Tẹjumọ",
+        "profile": "Ifihan"
+        },
+        "welcome": "Kaabo si Ile itaja wa",
+        "searchPlaceholder": "Wa awọn ọja...",
+        "allCategories": "Gbogbo Awọn ẹka",
+        "loadingProducts": "Ngbigbasilẹ awọn ọja...",
+        "addToCart": "Fi kun ra",
+        "productDetails": "Awọn alaye",
+        "manageProducts": "Ṣakoso Awọn ọja",
+        "productName": "Orukọ Ọja",
+        "description": "Apejuwe",
+        "image": "Aworan",
+        "category": "Ẹka",
+        "price": "Iye ($)",
+        "stock": "Ṣọja:",
+        "submit": "Fi ranṣẹ",
+        "productsList": "Atokọ Ọja",
+        "actions": "Awọn iṣe",
+        "edit": "Ṣatunkọ",
+        "delete": "Paarẹ"
+    }
+        
