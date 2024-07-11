@@ -1,6 +1,6 @@
     // import axios from 'axios';
 
-    // const API_KEY = 'AIzaSyC9FT-_OvJsILO_YJ82UuGV-vchfutEqNo';
+    
     // const API_URL = 'https://translation.googleapis.com/language/translate/v2';
 
     // // Cache object to store translations
@@ -55,7 +55,7 @@
 
     import axios from 'axios';
 
-    const API_KEY = 'AIzaSyC9FT-_OvJsILO_YJ82UuGV-vchfutEqNo'; // Replace with your Google Translate API key
+    const API_KEY = ''; // Replace with your Google Translate API key
     const API_URL = 'https://translation.googleapis.com/language/translate/v2';
 
     // Function to get translation from local storage
