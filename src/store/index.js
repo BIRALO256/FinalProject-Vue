@@ -61,8 +61,8 @@
         state.exchangeRates = rates;
         },
     },
-    actions: {
-
+    
+        actions: {
         async fetchExchangeRates({ commit, state }) {
         try {
             const response = await axios.get(`${BASE_URL}/${state.baseCurrency}`, {
@@ -70,9 +70,21 @@
                 api_key: API_KEY,
             },
             });
-            const rates = response.data.rates;
-            commit('setExchangeRates', rates);
-            return rates;
+            const allRates = response.data.rates;
+
+            // Define the currencies of interest
+            const currenciesOfInterest = ['KES', 'UGX', 'TZS', 'NGN','USD','EUR','GBP','INR'];
+
+            // Filter the rates to include only the currencies of interest
+            const filteredRates = Object.keys(allRates)
+            .filter(key => currenciesOfInterest.includes(key))
+            .reduce((obj, key) => {
+                obj[key] = allRates[key];
+                return obj;
+            }, {});
+
+            commit('setExchangeRates', filteredRates);
+            return filteredRates;
         } catch (error) {
             console.error('Failed to fetch exchange rates:', error);
             return {};
