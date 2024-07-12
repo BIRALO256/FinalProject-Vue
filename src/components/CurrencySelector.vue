@@ -20,10 +20,10 @@
     import { useStore } from 'vuex';
     
     const store = useStore();
-    const selectedCurrency = ref(store.state.currency); // Bind selectedCurrency to Vuex state
+    const selectedCurrency = ref(store.state.currency);
     
-    const handleChange = () => {
-        store.dispatch('setCurrency', selectedCurrency.value); // Dispatch action to update currency
+    const handleChange = async () => {
+        await store.dispatch('setCurrency', selectedCurrency.value);
     };
     </script>
     

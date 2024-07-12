@@ -46,6 +46,7 @@
   import CustomersNavbar from '../../components/CustomersNavbar.vue';
   import { useStore } from 'vuex';
   import { translateText } from '@/utils/translate';
+  import axios from 'axios';
 
   export default {
     components: {
@@ -58,7 +59,6 @@
       const message = ref('');
       const selectedCategory = ref('');
       const searchQuery = ref('');
-
       const translated = ref({
         welcome: '',
         searchPlaceholder: '',
@@ -126,33 +126,39 @@
         translatePage();
       });
 
-      const formatPrice = (price) => {
-        const selectedCurrency = store.state.currency;
-        switch (selectedCurrency) {
-          case 'USD':
-            return `$${price.toFixed(2)}`;
-          case 'EUR':
-            return `€${price.toFixed(2)}`;
-          case 'GBP':
-            return `£${price.toFixed(2)}`;
-          case 'INR':
-            return `₹${price.toFixed(2)}`;
-          // Add more cases for other currencies as needed
-          default:
-            return `${selectedCurrency} ${price.toFixed(2)}`;
-        }
-      };
-
-      return { products, loading, addToCart, message, selectedCategory, categories, filteredProducts, searchQuery, translated, formatPrice };
+        const formatPrice = (price) => {
+    const rate = store.state.exchangeRates[store.state.currency];
+    const convertedPrice = (price * rate).toFixed(4);
+    
+    switch (store.state.currency) {
+      case 'USD':
+        return `$${convertedPrice}`;
+      case 'EUR':
+        return `€${convertedPrice}`;
+      case 'GBP':
+        return `£${convertedPrice}`;
+      case 'INR':
+        return `₹${convertedPrice}`;
+      default:
+        return `${store.state.currency} ${convertedPrice}`;
     }
+  };
+
+      return {
+        loading,
+        message,
+        selectedCategory,
+        searchQuery,
+        categories,
+        filteredProducts,
+        translated,
+        addToCart,
+        formatPrice,
+      };
+    },
   };
   </script>
 
-  <style scoped>
-  .form-input, .form-select {
-    padding: 0.5rem;
-    border: 2px solid #e2e8f0;
-    border-radius: 0.375rem;
-    width: 100%;
-  }
+  <style>
+  /* Add your component-specific styles here */
   </style>
