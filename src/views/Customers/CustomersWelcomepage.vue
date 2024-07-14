@@ -126,7 +126,7 @@
         translatePage();
       });
 
-        const formatPrice = (price) => {
+    const formatPrice = (price) => {
     const rate = store.state.exchangeRates[store.state.currency];
     const convertedPrice = (price * rate).toFixed(4);
     
