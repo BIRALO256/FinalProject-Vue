@@ -7,7 +7,7 @@
     const store = createStore({
     state: {
         user: null,
-        cart: [],
+        cart: JSON.parse(localStorage.getItem('cart')) || [],
         language: 'yo',
         currency: 'USD',
         baseCurrency: 'USD',
@@ -29,12 +29,14 @@
         } else {
             state.cart.push({ ...product, quantity: 1 });
         }
+        localStorage.setItem('cart', JSON.stringify(state.cart));
         },
         removeFromCart(state, productId) {
         const index = state.cart.findIndex(item => item.id === productId);
         if (index !== -1) {
             state.cart.splice(index, 1);
         }
+        localStorage.setItem('cart', JSON.stringify(state.cart));
         },
         decrementQuantity(state, productId) {
         const product = state.cart.find(item => item.id === productId);
@@ -49,6 +51,7 @@
         },
         clearCart(state) {
         state.cart = [];
+        localStorage.setItem('cart', JSON.stringify(state.cart));
         },
         setLanguage(state, language) {
         state.language = language;
