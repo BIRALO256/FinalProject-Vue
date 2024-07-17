@@ -5,6 +5,8 @@ import store from './store/index';
 import './assets/tailwind.css';
 import './firebase';
 import FontAwesomeIcon from './plugins/font-awesome';
+import '@fortawesome/fontawesome-free/css/all.css';
+
 import { createI18n } from 'vue-i18n';
 import en from './locales/en.json';
 import sw from './locales/sw.json';

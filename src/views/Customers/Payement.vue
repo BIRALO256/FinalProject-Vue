@@ -5,13 +5,13 @@
       <h1 class="text-2xl font-bold mb-6 text-center text-gray-800">Checkout</h1>
       <div class="stripe-form bg-white p-6 rounded-lg shadow-lg">
         <form @submit.prevent="submitPayment">
-          <div id="card-element" class="mb-4"><!-- Stripe Card Element will be inserted here --></div>
+          
           <button
             type="submit"
-            :disabled="!stripeReady"
+          
             class="bg-green-600 hover:bg-green-800 text-white font-bold py-2 px-4 rounded w-full"
           >
-            Pay ${{ (calculateSubtotal / 100).toFixed(2) }}
+            Save Order ${{ (calculateSubtotal / 100).toFixed(2) }}
           </button>
         </form>
       </div>
@@ -20,10 +20,11 @@
 </template>
 
 <script>
-import { ref, computed, onMounted } from 'vue';
-import { loadStripe } from '@stripe/stripe-js';
+import { ref, computed } from 'vue';
 import { useStore } from 'vuex';
 import CustomersNavbar from '@/components/CustomersNavbar.vue';
+import { db } from '@/firebase';  // Import the Firestore instance
+import { collection, addDoc } from 'firebase/firestore';  // Import Firestore methods
 
 export default {
   components: {
@@ -31,84 +32,45 @@ export default {
   },
   setup() {
     const store = useStore();
-    const stripe = ref(null);
-    const elements = ref(null);
-    const stripeReady = ref(false);
+    
 
     // Compute the subtotal from the Vuex store
     const calculateSubtotal = computed(() => {
+      console.log('Calculating subtotal...');
       return store.state.cart.reduce((total, item) => {
         return total + item.price * item.quantity * 100; // Convert to cents
       }, 0);
     });
 
-    const cardStyle = {
-      style: {
-        base: {
-          color: "#32325d",
-        },
-      },
-    };
-
-    onMounted(async () => {
-      stripe.value = await loadStripe('pk_test_51PQUla2MAGtg9B9CJl0dk6UnCllaAP7iXZVx7FnpTax3jSlJB6XRq61sybxLppSYNdr0FWVZsF9d6hzwzFqQm6Dc008iL6JSbA'); // this is my stripe publishable key
-      elements.value = stripe.value.elements();
-      const cardElement = elements.value.create('card', cardStyle);
-      cardElement.mount('#card-element');
-      stripeReady.value = true;
-    });
-
     const submitPayment = async () => {
-      const cardElement = elements.value.getElement('card');
-
-      // Call for my backend to create the PaymentIntent
-      const response = await fetch('https://my-cloud-function-url/createPaymentIntent', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ amount: calculateSubtotal.value, currency: 'usd' }),
-      });
-
-      const { clientSecret } = await response.json();
-
-      const { error, paymentIntent } = await stripe.value.confirmCardPayment(clientSecret, {
-        payment_method: {
-          card: cardElement,
-        },
-      });
-
-      if (error) {
-        console.error('Error:', error);
-      } else {
-        console.log('Payment successful:', paymentIntent);
-        // Save the order to Firestore
-        saveOrder(paymentIntent);
-      }
+      console.log('submitPayment function called');
+      await saveOrder();
     };
 
-    const saveOrder = async (paymentIntent) => {
+    const saveOrder = async () => {
+      console.log('saveOrder function called');
+      console.log('User ID:', store.state.user.id);
+      console.log('Cart Items:', store.state.cart);
+      console.log('Total:', calculateSubtotal.value / 100);
       const order = {
-        userId: store.state.user.id,
+        userId: store.state.user.uid,
         items: store.state.cart,
         total: calculateSubtotal.value / 100,
-        paymentIntentId: paymentIntent.id,
         status: 'paid',
         createdAt: new Date().toISOString()
       };
 
-      await fetch('https://my-cloud-function-url/saveOrder', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(order),
-      });
-
-      store.dispatch('clearCart');
+      try {
+        const docRef = await addDoc(collection(db, 'order'),order);
+        console.log('Document written with ID: ', docRef.id);
+        store.dispatch('clearCart');
+        console.log('Order saved successfully');
+      } catch (error) {
+        console.error('Error saving order:', error);
+      }
     };
 
-    return { submitPayment, cardStyle, stripeReady, calculateSubtotal };
+    return { submitPayment, calculateSubtotal };
   }
 };
 </script>

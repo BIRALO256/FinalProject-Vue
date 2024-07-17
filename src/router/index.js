@@ -7,6 +7,7 @@ import Signup from '../views/Signup.vue';
 import { auth } from '../firebase'; 
 import Users from '../views/Users'
 import Productdetails from '../views/Customers/CustomersProductdetails.vue'
+import Order    from '../views/Customers/Orders.vue'
 import CartPage  from '../views/Customers/AddCart'
 import CheckOut from '../views/Customers/CheckOut'
 import Payement from '../views/Customers/Payement'
@@ -46,7 +47,7 @@ const routes = [
   path: '/productDetails/:id',
   name: 'product-details',
   component: Productdetails,
-  props: true,  
+  props: true,
   meta: { requiresAuth: true },
   },
 
@@ -80,6 +81,13 @@ const routes = [
     path: '/feed',
     name: 'feed',
     component: HomeView,
+    meta: { requiresAuth: true },
+  },
+  {
+    path: '/Orders',
+    name: 'Orders',
+    // props: true,
+    component: Order,
     meta: { requiresAuth: true },
   },
   {
