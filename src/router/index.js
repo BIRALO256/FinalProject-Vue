@@ -4,7 +4,7 @@ import Welcome from '../views/Customers/CustomersWelcomepage.vue';
 import NotAvailable from '../views/NotAvailable.vue';
 import Register from '../views/Register.vue';
 import Signup from '../views/Signup.vue';
-import { auth } from '../firebase'; 
+import { auth } from '../firebase';
 import Users from '../views/Users'
 import Productdetails from '../views/Customers/CustomersProductdetails.vue'
 import Order    from '../views/Customers/Orders.vue'
@@ -12,7 +12,7 @@ import CartPage  from '../views/Customers/AddCart'
 import CheckOut from '../views/Customers/CheckOut'
 import Payement from '../views/Customers/Payement'
 import Profile from '../views/Customers/Profilepage.vue'
-import store from '../store/index'; // Import the store
+import store from '../store/index';
 
 
 

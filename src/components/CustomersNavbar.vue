@@ -1,6 +1,6 @@
 <template>
   <nav class="bg-gray-800 text-white p-4 sticky top-0 z-50">
-    <div class="container mx-auto flex justify-between items-center max-w-4xl">
+    <div class="container mx-auto flex justify-between items-center max-w-7xl">
       <!-- Logo and main links -->
       <div class="flex items-center space-x-4">
         <router-link :to="{ name: 'about' }" class="text-lg hover:text-gray-300 flex items-center">
@@ -31,11 +31,15 @@
             <font-awesome-icon icon="cash-register" class="mr-2" />{{ $t('navbar.checkout') }}
           </router-link>
 
+          <router-link :to="{ name: 'Orders' }" class="text-lg hover:text-gray-300 flex items-center">
+              Orders
+            </router-link>
           <!-- Profile & Logout -->
           <template v-if="user">
             <router-link :to="{ name: 'profile' }" class="text-lg hover:text-gray-300 flex items-center">
               <font-awesome-icon icon="user" class="mr-2" />
             </router-link>
+            
             <button @click="logout" class="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded-lg transition duration-300 ease-in-out flex items-center">
               <font-awesome-icon icon="sign-out-alt" class="mr-2" />
               <!-- {{ $t('navbar.logout') }} -->

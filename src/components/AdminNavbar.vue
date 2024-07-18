@@ -1,6 +1,6 @@
 <template>
   <nav class="bg-gray-800 text-white p-4 fixed top-0 w-full z-50">
-    <div class="container mx-auto flex justify-between items-center max-w-4xl">
+    <div class="container mx-auto flex justify-between items-center max-w-7xl">
       <div>
         <router-link :to="{name:'feed'}" class="text-lg hover:text-gray-300 mr-4 hidden md:inline">{{ $t('navbar.products') }}</router-link>
         <router-link :to="{name: 'users'}" class="text-lg hover:text-gray-300 mr-4 hidden md:inline">{{ $t('navbar.systemUsers') }}</router-link>
