@@ -31,7 +31,7 @@
             <font-awesome-icon icon="cash-register" class="mr-2" />{{ $t('navbar.checkout') }}
           </router-link>
 
-          <router-link :to="{ name: 'Orders' }" class="text-lg hover:text-gray-300 flex items-center">
+          <router-link :to="{ name: 'Order' }" class="text-lg hover:text-gray-300 flex items-center">
               Orders
             </router-link>
           <!-- Profile & Logout -->

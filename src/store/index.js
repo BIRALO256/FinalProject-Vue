@@ -1,6 +1,7 @@
     import { createStore } from 'vuex';
     import axios from 'axios';
 
+
     const API_KEY = 'cfea45004ca19fb59b7bb747'; // Replace with your actual API key
     const BASE_URL = 'https://api.exchangerate-api.com/v4/latest';
 
@@ -8,7 +9,7 @@
     state: {
         user: null,
         cart: JSON.parse(localStorage.getItem('cart')) || [],
-        language: 'yo',
+        language: 'en',
         currency: 'USD',
         baseCurrency: 'USD',
         exchangeRates: {},

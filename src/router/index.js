@@ -1,18 +1,20 @@
 import { createRouter, createWebHistory } from 'vue-router';
-import HomeView from '../views/HomeView.vue';
+import store from '../store/index';
+import CartPage from '../views/Customers/AddCart';
+import CheckOut from '../views/Customers/CheckOut';
+import Productdetails from '../views/Customers/CustomersProductdetails.vue';
 import Welcome from '../views/Customers/CustomersWelcomepage.vue';
+import Order from '../views/Customers/Order.vue';
+import Orders from '../views/Customers/Orders.vue';
+import RatingPage from '../views/Customers/Orders.vue';
+import Payement from '../views/Customers/Payement';
+import Profile from '../views/Customers/Profilepage.vue';
+import HomeView from '../views/HomeView.vue';
 import NotAvailable from '../views/NotAvailable.vue';
 import Register from '../views/Register.vue';
 import Signup from '../views/Signup.vue';
-import { auth } from '../firebase';
-import Users from '../views/Users'
-import Productdetails from '../views/Customers/CustomersProductdetails.vue'
-import Order    from '../views/Customers/Orders.vue'
-import CartPage  from '../views/Customers/AddCart'
-import CheckOut from '../views/Customers/CheckOut'
-import Payement from '../views/Customers/Payement'
-import Profile from '../views/Customers/Profilepage.vue'
-import store from '../store/index';
+import Users from '../views/Users';
+import Questions from '@/views/Questions.vue';
 
 
 
@@ -83,12 +85,28 @@ const routes = [
     component: HomeView,
     meta: { requiresAuth: true },
   },
+  
   {
-    path: '/Orders',
-    name: 'Orders',
-    // props: true,
-    component: Order,
+    path: '/ratingdetails/:id',
+    name: 'rating-details',
+    component: RatingPage,
+    props: true,
     meta: { requiresAuth: true },
+    },
+  
+
+  {
+    path:'/Order',
+    name:'Order',
+    component:Order,
+    meta:{requiresAuth:true}
+  },
+  
+  {
+    path:'/questions',
+    name:'questions',
+    component:Questions,
+    meta:{requiresAuth:true}
   },
   {
     path: '/users',

@@ -23,7 +23,7 @@ const messages = {en,sw,yo,ar
 };
 
 const i18n = createI18n({
-  locale: 'yo', // default locale
+  locale: 'en', // default locale
   legacy: false, // Enables Composition API mode
   globalInjection: true, // Allows global use of $t and other i18n methods
   fallbackLocale: 'en',

@@ -7,6 +7,7 @@
       </div>
       <div class="flex items-center">
         <span v-if="user" class="mr-4 hidden md:inline">{{ $t('navbar.hello') }} {{ user.displayName }}</span>
+        <router-link :to="{name: 'questions'}" class="text-lg hover:text-gray-300 mr-4 hidden md:inline">Questions</router-link>
         <router-link v-if="user" :to="{ name: 'profile' }" class="text-lg hover:text-gray-300 mr-4 hidden md:inline">{{ $t('navbar.profile') }}</router-link>
         <button v-if="user" @click="logout" class="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded transition duration-300 ease-in-out hidden md:inline">
           {{ $t('navbar.logout') }}
@@ -22,6 +23,7 @@
       <router-link @click="toggleMenu" :to="{name:'feed'}" class="block text-lg hover:text-gray-300 p-4">{{ $t('navbar.products') }}</router-link>
       <router-link @click="toggleMenu" :to="{name: 'users'}" class="block text-lg hover:text-gray-300 p-4">{{ $t('navbar.systemUsers') }}</router-link>
       <span v-if="user" class="block text-lg p-4">{{ $t('navbar.hello') }} {{ user.displayName }}</span>
+      <router-link @click="toggleMenu"  :to="{name: 'questions'}" class="text-lg hover:text-gray-300 mr-4 ">Questions</router-link>
       <router-link @click="toggleMenu" v-if="user" :to="{ name: 'profile' }" class="block text-lg hover:text-gray-300 p-4">{{ $t('navbar.profile') }}</router-link>
       <button @click="logout" class="block bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded transition duration-300 ease-in-out w-full">
         {{ $t('navbar.logout') }}
