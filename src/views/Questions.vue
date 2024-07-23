@@ -32,6 +32,7 @@
                     <option value="time">Time</option>
                 </select>
                 </div>
+                
             </div>
     
             <div
@@ -92,6 +93,15 @@
                 >
                 <i class="fas fa-trash-alt h-5 w-5"></i>
                 </button>
+                <!-- Required Toggle -->
+                <label class="flex items-center space-x-2">
+                <input
+                    type="checkbox"
+                    v-model="question.required"
+                    class="form-checkbox h-4 w-4 text-blue-600 transition duration-200"
+                />
+                <span class="text-sm text-gray-600">Required</span>
+                </label>
             </div>
             </div>
             <button
@@ -109,125 +119,128 @@
         </div>
         </div>
     </template>
-    
     <script>
     import { ref } from "vue";
     import { collection, addDoc } from "firebase/firestore";
     import { db } from "@/firebase";
     import AdminNavbar from "@/components/AdminNavbar.vue";
-    
+    import draggable from 'vuedraggable'
+
     export default {
-        components: {
+    components: {
         AdminNavbar,
-        },
-        setup() {
+        draggable,
+    },
+    setup() {
         const questions = ref([
-            { text: "", type: "text", options: [] }, // Initial question setup
+        { text: "", type: "text", options: [], required: false }, // Initial question setup
         ]);
-    
+
         // Function to generate a key from the label
         const generateKey = (label) => {
-            return label.trim().replace(/\s+/g, '_').toUpperCase();
+        return label.trim().replace(/\s+/g, '_').toUpperCase();
         };
-    
+
         // Function to add a new question
         const addQuestion = () => {
-            questions.value.push({
+        questions.value.push({
             index: questions.value.length + 1,
             text: "",
             type: "text",
             options: [],
-            });
+            required: false,
+        });
         };
-    
+
         // Function to duplicate a specific question
         const duplicateQuestion = (index) => {
-            const questionToDuplicate = questions.value[index];
-            // Create a copy of the question
-            const duplicatedQuestion = {
+        const questionToDuplicate = questions.value[index];
+        // Create a copy of the question
+        const duplicatedQuestion = {
             ...questionToDuplicate,
             options: questionToDuplicate.options.map((option) => ({ ...option })),
-            };
-            // Insert the duplicated question after the original one
-            questions.value.splice(index + 1, 0, duplicatedQuestion);
         };
-    
+        // Insert the duplicated question after the original one
+        questions.value.splice(index + 1, 0, duplicatedQuestion);
+        };
+
         // Function to remove a specific question
         const removeQuestion = (index) => {
-            questions.value.splice(index, 1);
-            // Update indexes of the remaining questions
-            questions.value.forEach((question, idx) => (question.index = idx + 1));
+        questions.value.splice(index, 1);
+        // Update indexes of the remaining questions
+        questions.value.forEach((question, idx) => (question.index = idx + 1));
         };
-    
+
         // Function to add an option to a question
         const addOption = (questionIndex) => {
-            questions.value[questionIndex].options.push({ label: "", key: "" });
+        questions.value[questionIndex].options.push({ label: "", key: "" });
         };
-    
+
         // Function to remove a specific option from a question
         const removeOption = (questionIndex, optionIndex) => {
-            questions.value[questionIndex].options.splice(optionIndex, 1);
+        questions.value[questionIndex].options.splice(optionIndex, 1);
         };
-    
+
         // Function to submit the form and store it in Firebase
         const submitForm = async () => {
-            try {
+        try {
             const formsCollection = collection(db, "forms");
             const docRef = await addDoc(formsCollection, {
-                questions: questions.value,
+            questions: questions.value,
             });
             alert(`Form created successfully! Form ID: ${docRef.id}`);
             // Save the form ID for later use
             localStorage.setItem("formId", docRef.id);
             // Clear the form after submission
-            questions.value = [{ text: "", type: "text", options: [] }];
-            } catch (e) {
+            questions.value = [{ text: "", type: "text", options: [], required: false }];
+        } catch (e) {
             console.error("Error saving document: ", e);
-            }
+        }
         };
-    
+
         return {
-            questions,
-            addQuestion,
-            duplicateQuestion,
-            removeQuestion,
-            addOption,
-            removeOption,
-            submitForm,
-            generateKey, // Expose the function to the template
+        questions,
+        addQuestion,
+        duplicateQuestion,
+        removeQuestion,
+        addOption,
+        removeOption,
+        submitForm,
+        generateKey,
         };
-        },
+    },
     };
     </script>
     
-    <style scoped>
-    .form-input {
-        border: 1px solid #ddd;
-        padding: 0.375rem;
-        border-radius: 0.25rem;
-        font-size: 0.875rem;
-    }
-    
-    .form-select {
-        border: 1px solid #ddd;
-        padding: 0.375rem;
-        border-radius: 0.25rem;
-        font-size: 0.875rem;
-    }
-    
-    button {
-        font-size: 0.875rem;
-        line-height: 1.25rem;
-    }
-    
-    @media (min-width: 640px) {
+        
+        <style scoped>
         .form-input {
-        padding: 0.5rem;
+            border: 1px solid #ddd;
+            padding: 0.375rem;
+            border-radius: 0.25rem;
+            font-size: 0.875rem;
         }
-    
+        
         .form-select {
-        padding: 0.5rem;
+            border: 1px solid #ddd;
+            padding: 0.375rem;
+            border-radius: 0.25rem;
+            font-size: 0.875rem;
         }
-    }
-    </style>
-    
+        
+        button {
+            font-size: 0.875rem;
+            line-height: 1.25rem;
+        }
+        
+        @media (min-width: 640px) {
+            .form-input {
+            padding: 0.5rem;
+            }
+        
+            .form-select {
+            padding: 0.5rem;
+            }
+        }
+        </style>
+        
