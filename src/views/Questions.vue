@@ -1,17 +1,16 @@
     <template>
         <AdminNavbar />
         <div class="min-h-screen bg-gray-100 p-4 flex flex-col items-center">
-        <h1 class="text-2xl font-bold text-center mb-6">
-            {{ formExists ? 'Edit Form' : 'Create Form' }}
-        </h1>
+        <h1 class="text-2xl font-bold text-center mb-6">Create Form</h1>
         <div class="w-full max-w-2xl p-6 rounded-lg">
             <div
             v-for="(question, index) in questions"
             :key="index"
             class="mb-6 p-4 border border-gray-200 rounded-lg shadow-sm bg-white"
             >
-
-        <div class="flex flex-col sm:flex-row items-center mb-3 space-y-4 sm:space-y-0 sm:space-x-4">
+            <div
+                class="flex flex-col sm:flex-row items-center mb-3 space-y-4 sm:space-y-0 sm:space-x-4"
+            >
                 <span class="font-semibold text-gray-700">{{ index + 1 }}.</span>
                 <input
                 v-model="question.text"
@@ -34,19 +33,25 @@
                 </select>
                 </div>
             </div>
-
-            <div v-if="question.type === 'checkbox' || question.type === 'radio'" class="mb-3">
+    
+            <div
+                v-if="question.type === 'checkbox' || question.type === 'radio'"
+                class="mb-3"
+            >
                 <div
                 v-for="(option, optIndex) in question.options"
                 :key="optIndex"
                 class="flex items-center mb-1"
                 >
                 <input
-                    v-model="option.text"
+                    v-model="option.label"
+                    @input="option.key = generateKey(option.label)"
                     type="text"
                     placeholder="Option text"
                     class="form-input flex-1 border rounded-lg px-3 py-1.5 focus:outline-none focus:ring-1 focus:ring-blue-300 transition duration-200"
                 />
+                <!-- Display the generated key -->
+                <!-- <span class="ml-3 text-gray-500">{{ option.key }}</span> -->
                 <button
                     @click="removeOption(index, optIndex)"
                     class="ml-3 p-1 text-red-500 hover:text-red-700 transition duration-200"
@@ -73,16 +78,21 @@
                 >
                 Add Option
                 </button>
-                
-                
-
             </div>
-            <button
-                    @click="removeQuestion(index)"
-                    class="ml-3 p-1 text-red-500 hover:text-red-700 transition duration-200 flex flex-row justify-end "
+            <div class="flex flex-row justify-end space-x-2">
+                <button
+                @click="duplicateQuestion(index)"
+                class="ml-3 p-1 text-green-500 hover:text-green-700 transition duration-200"
                 >
-                    <i class="fas fa-trash-alt h-5 w-5"></i>
-            </button>
+                <i class="fas fa-copy h-5 w-5"></i>
+                </button>
+                <button
+                @click="removeQuestion(index)"
+                class="ml-3 p-1 text-red-500 hover:text-red-700 transition duration-200"
+                >
+                <i class="fas fa-trash-alt h-5 w-5"></i>
+                </button>
+            </div>
             </div>
             <button
             @click="addQuestion"
@@ -94,93 +104,97 @@
             @click="submitForm"
             class="w-full bg-blue-500 hover:bg-blue-600 text-white text-sm py-2 px-4 rounded-lg transition duration-200"
             >
-            {{ formExists ? 'Update Form' : 'Create Form' }}
+            Create Form
             </button>
         </div>
         </div>
     </template>
     
     <script>
-    import { ref, onMounted } from 'vue';
-    import { collection, doc, getDocs, setDoc, updateDoc } from 'firebase/firestore';
-    import { db } from '@/firebase';
-    import AdminNavbar from '@/components/AdminNavbar.vue';
+    import { ref } from "vue";
+    import { collection, addDoc } from "firebase/firestore";
+    import { db } from "@/firebase";
+    import AdminNavbar from "@/components/AdminNavbar.vue";
     
     export default {
         components: {
         AdminNavbar,
         },
         setup() {
-        const questions = ref([]);
-        const formId = ref(null);
-        const formExists = ref(false);
+        const questions = ref([
+            { text: "", type: "text", options: [] }, // Initial question setup
+        ]);
     
-        const fetchQuestions = async () => {
-            try {
-            const formsCollection = collection(db, 'forms');
-            const querySnapshot = await getDocs(formsCollection);
-    
-            if (!querySnapshot.empty) {
-                const docSnap = querySnapshot.docs[0];
-                formId.value = docSnap.id;
-                questions.value = docSnap.data().questions;
-                formExists.value = true;
-            } else {
-                questions.value = [{ text: '', type: 'text', options: [] }];
-                formExists.value = false;
-            }
-            } catch (e) {
-            console.error('Error fetching documents: ', e);
-            }
+        // Function to generate a key from the label
+        const generateKey = (label) => {
+            return label.trim().replace(/\s+/g, '_').toUpperCase();
         };
     
+        // Function to add a new question
         const addQuestion = () => {
-            questions.value.push({ index: questions.value.length + 1, text: '', type: 'text', options: [] });
+            questions.value.push({
+            index: questions.value.length + 1,
+            text: "",
+            type: "text",
+            options: [],
+            });
         };
     
+        // Function to duplicate a specific question
+        const duplicateQuestion = (index) => {
+            const questionToDuplicate = questions.value[index];
+            // Create a copy of the question
+            const duplicatedQuestion = {
+            ...questionToDuplicate,
+            options: questionToDuplicate.options.map((option) => ({ ...option })),
+            };
+            // Insert the duplicated question after the original one
+            questions.value.splice(index + 1, 0, duplicatedQuestion);
+        };
+    
+        // Function to remove a specific question
         const removeQuestion = (index) => {
             questions.value.splice(index, 1);
             // Update indexes of the remaining questions
-            questions.value.forEach((question, idx) => question.index = idx + 1);
+            questions.value.forEach((question, idx) => (question.index = idx + 1));
         };
     
+        // Function to add an option to a question
         const addOption = (questionIndex) => {
-            questions.value[questionIndex].options.push({ text: '' });
+            questions.value[questionIndex].options.push({ label: "", key: "" });
         };
     
+        // Function to remove a specific option from a question
         const removeOption = (questionIndex, optionIndex) => {
             questions.value[questionIndex].options.splice(optionIndex, 1);
         };
     
+        // Function to submit the form and store it in Firebase
         const submitForm = async () => {
             try {
-            const docRef = formId.value ? doc(db, 'forms', formId.value) : doc(collection(db, 'forms'));
-            if (formExists.value) {
-                await updateDoc(docRef, { questions: questions.value });
-                alert('Form updated successfully!');
-            } else {
-                await setDoc(docRef, { questions: questions.value });
-                formId.value = docRef.id;
-                formExists.value = true;
-                alert('Form created successfully!');
-            }
+            const formsCollection = collection(db, "forms");
+            const docRef = await addDoc(formsCollection, {
+                questions: questions.value,
+            });
+            alert(`Form created successfully! Form ID: ${docRef.id}`);
+            // Save the form ID for later use
+            localStorage.setItem("formId", docRef.id);
+            // Clear the form after submission
+            questions.value = [{ text: "", type: "text", options: [] }];
             } catch (e) {
-            console.error('Error saving document: ', e);
+            console.error("Error saving document: ", e);
             }
         };
     
-        onMounted(() => {
-            fetchQuestions();
-        });
-    
         return {
             questions,
-            formExists,
             addQuestion,
+            duplicateQuestion,
             removeQuestion,
             addOption,
             removeOption,
             submitForm,
+            generateKey, // Expose the function to the template
         };
         },
     };

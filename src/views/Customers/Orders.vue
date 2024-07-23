@@ -1,7 +1,7 @@
     <template>
         <div class="min-h-screen bg-gray-100">
         <CustomersNavbar />
-        <div class="container mx-auto p-4">
+        <div class="container mx-auto p-4 max-w-4xl ">
             <h3 class="text-lg font-bold">Rate the Products:</h3>
     
             <!-- Product Ratings Section -->
@@ -46,31 +46,31 @@
                 </div>
     
                 <div v-else-if="question.type === 'radio'" class="flex flex-col lg:flex-row justify-center lg:space-x-4">
-                    <div v-for="option in question.options" :key="option.text" class="mb-2 flex flex-col md:flex-row md:justify-center">
+                    <div v-for="option in question.options" :key="option.label" class="mb-2 flex flex-col md:flex-row md:justify-center">
                     <label class="inline-flex items-center mr-4">
                         <input
                         type="radio"
                         :name="'question-' + index"
-                        :value="option.text"
+                        :value="option.label"
                         v-model="responses[index].value"
                         class="form-radio text-blue-500"
                         />
-                        <span class="ml-2">{{ option.text }}</span>
+                        <span class="ml-2">{{ option.label }}</span>
                     </label>
                     </div>
                 </div>
     
                 <div v-else-if="question.type === 'checkbox'" class="flex flex-col lg:flex-row justify-center lg:space-x-4 flex-wrap">
-                    <div v-for="option in question.options" :key="option.text" class="mb-2 flex flex-col md:flex-row md:justify-center">
+                    <div v-for="option in question.options" :key="option.label" class="mb-2 flex flex-col md:flex-row md:justify-center">
                     <label class="inline-flex items-center mr-4">
                         <input
                         type="checkbox"
-                        :value="option.text"
-                        :checked="responses[index].value.includes(option.text)"
-                        @change="updateCheckboxResponse(index, option.text)"
+                        :value="option.label"
+                        :checked="responses[index].value.includes(option.label)"
+                        @change="updateCheckboxResponse(index, option.label)"
                         class="form-checkbox text-blue-500"
                         />
-                        <span class="ml-2">{{ option.text }}</span>
+                        <span class="ml-2">{{ option.label }}</span>
                     </label>
                     </div>
                 </div>
@@ -94,6 +94,13 @@
                 <div v-else-if="question.type === 'date'" class="flex justify-center">
                     <input
                     type="date"
+                    v-model="responses[index].value"
+                    class="border rounded p-2 w-full mb-4 shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all"
+                    />
+                </div>
+                <div v-else-if="question.type === 'time'" class="flex justify-center">
+                    <input
+                    type="time"
                     v-model="responses[index].value"
                     class="border rounded p-2 w-full mb-4 shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all"
                     />
@@ -186,6 +193,8 @@
                 return { type: 'file', value: null }; // For file uploads
             } else if (question.type === 'date') {
                 return { type: 'date', value: '' }; // For date selection
+            }else if (question.type === 'time') {
+                return { type: 'time', value: '' }; // For time selection
             }
             return { type: 'text', value: '' }; // Default case
             });
@@ -258,6 +267,10 @@
                 return { type: 'file', value: null }; // For file uploads
             } else if (question.type === 'date') {
                 return { type: 'date', value: '' }; // For date selection
+                
+            }else if (question.type === 'time') {
+                return { type: 'time', value: '' }; // For time selection
+                
             }
             return { type: 'text', value: '' }; // Default case
             });
