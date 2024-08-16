@@ -60,7 +60,7 @@ export default {
       const auth = getAuth();
       signOut(auth).then(() => {
         store.dispatch('clearUser');
-        router.push({ name: 'signup' });
+        router.push({ name: 'feed' });
         menuOpen.value = false;
       }).catch((error) => {
         console.error('Logout failed:', error);

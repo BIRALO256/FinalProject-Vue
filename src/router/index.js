@@ -21,10 +21,10 @@ import Questions from '@/views/Questions.vue';
 const routes = [
   // Non-protected routes
   {
-    path: '/about',
+    path: '/',
     name: 'about',
     component: Welcome,
-    meta: { requiresAuth: true },
+    // meta: { requiresAuth: true },
   },
   
   {
@@ -43,14 +43,14 @@ const routes = [
     path: '/addcart',
     name: 'cart',
     component: CartPage,
-    meta: { requiresAuth: true },
+    // meta: { requiresAuth: true },
   },
   {
   path: '/productDetails/:id',
   name: 'product-details',
   component: Productdetails,
   props: true,
-  meta: { requiresAuth: true },
+  // meta: { requiresAuth: true },
   },
 
   // 404 page
@@ -68,7 +68,7 @@ const routes = [
     
   },
   {
-    path: '/',
+    path: '/signup',
     name: 'signup',
     component: Signup,
   },
