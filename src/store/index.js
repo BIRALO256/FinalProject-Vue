@@ -3,7 +3,7 @@
 
 
     const API_KEY = 'cfea45004ca19fb59b7bb747'; // Replace with your actual API key
-    const BASE_URL = 'https://5cd7-41-75-191-117.ngrok-free.app';
+    const BASE_URL = 'https://api.exchangerate-api.com/v4/latest';
 
     const store = createStore({
     state: {
